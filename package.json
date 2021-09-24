@@ -30,6 +30,7 @@
     "eslint": "^7.32.0",
     "eslint-config-prettier": "~8.3.0",
     "husky": "^7.0.2",
+    "lint-staged": "^11.1.2",
     "nodemon": "^2.0.13",
     "prettier": "^2.4.1",
     "ts-node": "^10.2.1",
@@ -37,8 +38,13 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn lint"
-
+      "pre-commit": "lint-staged"
     }
+  },
+  "lint-staged": {
+    "**/*.js": [
+      "yarn lint"
+
+    ]
   }
 }
