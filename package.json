@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "lint": "eslint \"**/*.{js,ts}\"",
+    "lint": "eslint **/*.ts",
     "prepare": "husky install"
   },
   "dependencies": {
