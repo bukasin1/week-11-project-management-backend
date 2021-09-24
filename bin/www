@@ -7,7 +7,7 @@
 var app = require('../dist/app').default;
 var debug = require('debug')('project-management-app-project-management-app-group-a:server');
 var http = require('http');
-
+var run = require("../database/databaseConnect")
 /**
  * Get port from environment and store in Express.
  */
@@ -28,7 +28,7 @@ var server = http.createServer(app);
 server.listen(port,()=> console.log(`server is running on port ${port}`));
 server.on('error', onError);
 server.on('listening', onListening);
-
+run()
 /**
  * Normalize a port into a number, string, or false.
  */
