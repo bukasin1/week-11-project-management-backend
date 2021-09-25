@@ -44,6 +44,9 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ['male', 'female'],
     },
+    role: {
+      type: String,
+    },
     location: {
       type: String,
     },
