@@ -4,10 +4,13 @@ import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 
+
 import indexRouter from './routes/index';
 import usersRouter from './routes/users';
+import authRouter from './routes/auth-routes';
 
 const app = express();
+const passport = require('./config/passport-config');
 
 // view engine setup
 app.set('views', path.join(__dirname, '..', 'views'));
@@ -21,6 +24,7 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/auth', authRouter);
 
 // catch 404 and forward to error handler
 app.use(function (_req: Request, _res: Response, next: NextFunction) {
