@@ -31,7 +31,7 @@ export const signUpUser = async (req: Request, res: Response) => {
   });
 
   const message = `
-  <form action="http://localhost:3000/users/verify" method="post">
+  <form action="http://localhost:3000/users/verify/:${email}" method="post">
   <p>Thank you for signing up with Project App. Please click verify below to complete your sign up</p>
   <br />
   <button type="submit">VERIFY</button>
@@ -44,7 +44,9 @@ export const signUpUser = async (req: Request, res: Response) => {
 };
 
 export const verifyUser = async (req: Request, res: Response) => {
-  const emai = req.body.email;
+  const emai = req.params.id;
+  console.log(emai);
   const verifiedUser = await User.findOneAndUpdate({ emai: emai }, { isVerified: true }, { new: true });
+  console.log(verifiedUser);
   res.send(verifiedUser);
 };

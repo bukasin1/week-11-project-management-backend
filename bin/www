@@ -8,6 +8,7 @@ var app = require('../dist/app').default;
 var debug = require('debug')('project-management-app-project-management-app-group-a:server');
 var http = require('http');
 var run = require("../database/databaseConnect")
+//var run = require("../localdatabase/localdatabase")
 /**
  * Get port from environment and store in Express.
  */

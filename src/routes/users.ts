@@ -8,6 +8,6 @@ router.get('/', function (_req: Request, res: Response) {
 });
 router.post('/signup', signUpUser);
 
-router.post('/verify', verifyUser);
+router.post('/verify/:id', verifyUser);
 
 export default router;
