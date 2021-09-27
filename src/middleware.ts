@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 // route middleware to make sure
 export function isLoggedIn(req: Request, res: Response, next: NextFunction) {
   console.log("check isLoggedIn", req.isAuthenticated())
