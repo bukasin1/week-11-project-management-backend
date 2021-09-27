@@ -3,6 +3,7 @@ const router = Router();
 
 /* GET home page. */
 router.get('/', function (req: Request, res: Response) {
+  if (req.isAuthenticated()) return res.redirect('/dashboard');
   res.render('index', { title: 'Express' });
 });
 
