@@ -9,6 +9,12 @@ function run() {
     // Connect to the MongoDB cluster
     mongoose.connect(
       mongoAtlasUri,
+      {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+        useCreateIndex: true,
+        useFindAndModify: false,
+      },
 
       () => console.log(' Mongoose is connected'),
     );
