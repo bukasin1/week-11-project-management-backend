@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import express, { Request, Response} from "express"
 // import User from "../models/userschema"
 const User = require('../models/userschema')
-import sendMailer from '../nodemailer'
+import sendMailer from '../../nodemailer'
 import jwt,{ JwtPayload} from 'jsonwebtoken'
 
 
