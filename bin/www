@@ -3,7 +3,7 @@
 /**
  * Module dependencies.
  */
-
+const mongoose =  require( 'mongoose')
 var app = require('../dist/app').default;
 var debug = require('debug')('project-management-app-project-management-app-group-a:server');
 var http = require('http');
