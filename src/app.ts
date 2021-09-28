@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import cookieSession from 'cookie-session';
 import passport from 'passport';
+import flash from 'express-flash';
 
 import indexRouter from './routes/index';
 import usersRouter from './routes/users';
@@ -24,6 +25,7 @@ app.use(
     keys: [process.env.cookiesKey as string],
   }),
 );
+app.use(flash());
 
 //initialize passport
 app.use(passport.initialize());

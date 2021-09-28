@@ -37,7 +37,6 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
       trim: true,
     },
     gender: {
@@ -67,6 +66,12 @@ const userSchema = new mongoose.Schema(
     resetpasswordexpires: {
       type: String,
     },
+    facebookId: {
+      type: String
+    },
+    googleId: {
+      type: String
+    }
   },
   {
     timestamps: true,

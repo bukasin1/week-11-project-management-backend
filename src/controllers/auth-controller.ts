@@ -6,7 +6,7 @@ const login = async (req: Request, res: Response) => {
 };
 
 const googleHandler = passport.authenticate("google", {
-  scope: ["profile"],
+  scope: ["profile", "email"],
 });
 
 const logout = async (req: Request, res: Response) => {
@@ -21,7 +21,18 @@ const redirectHandler = passport.authenticate('google');
 //redirect after authentication
 const redirect = async (req: Request, res: Response) => {
   // res.send(req.user);
-  res.redirect('/profile/');
+  res.redirect('/profile');
 };
+
+export const getFacebookAuth = () => {
+  return passport.authenticate("facebook", {scope: ['email'] })
+}
+
+export const authFacebook = () => {
+  return passport.authenticate("facebook", {
+    successRedirect: "/profile",
+    failureRedirect: "/"
+  })
+}
 
 export { login, googleHandler, logout, redirect, redirectHandler };

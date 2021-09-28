@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { showProfile } from '../controllers/profile-controller';
-import authCheck from '../middlewares/auth-check';
+import { authCheck, isLoggedIn } from '../middlewares/auth-check';
 const router = Router();
 
-router.get('/', authCheck, showProfile);
+router.get('/', isLoggedIn, showProfile);
 
 export default router;

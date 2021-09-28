@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction, Express } from 'express';
-
-type userProfile = Express.User & { userName: string };
+import { userType } from '../config/passport-config';
 
 const showProfile = (req: Request, res: Response) => {
-  const user = req.user as userProfile;
-  res.render('profile', { user: user.userName });
+  const user = req.user as userType;
+  res.render('profile', { user: user.firstname });
 };
 
 export { showProfile };
