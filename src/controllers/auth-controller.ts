@@ -11,7 +11,17 @@ const googleHandler = passport.authenticate("google", {
 
 const logout = async (req: Request, res: Response) => {
   //passport handles logout
-  res.send("logging out of app");
+  req.logout();
+  req.session = null;
+  res.redirect('/');
 };
 
-export { login, googleHandler, logout };
+const redirectHandler = passport.authenticate('google');
+
+//redirect after authentication
+const redirect = async (req: Request, res: Response) => {
+  // res.send(req.user);
+  res.redirect('/profile/');
+};
+
+export { login, googleHandler, logout, redirect, redirectHandler };
