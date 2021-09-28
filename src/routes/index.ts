@@ -5,7 +5,7 @@ import auth from "../middleware/auth"
 
 /* GET home page. */
 router.get('/', auth, function (req: any, res: Response) {
-  res.render('index', { title: 'Express' });
+  res.render('index', { title: 'Express ' });
 });
 
 export default router;
