@@ -1,4 +1,3 @@
-import { string } from 'joi';
 import mongoose from 'mongoose';
 
 export interface IUser {
@@ -51,7 +50,7 @@ const userSchema = new mongoose.Schema<IUser>(
       type: String,
     },
     teams: {
-      type: [],
+      type: [String],
     },
     about: {
       type: String,
@@ -60,7 +59,7 @@ const userSchema = new mongoose.Schema<IUser>(
       type: Boolean,
       default: false,
     },
-    avater: {
+    avatar: {
       type: String,
       contentType: String,
     },

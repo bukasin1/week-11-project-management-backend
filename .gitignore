@@ -4,3 +4,5 @@ dist
 sendgrid.env
 index.html
 localdatabase
+__tests__/db.ts
+__tests__/user.route.test.ts
