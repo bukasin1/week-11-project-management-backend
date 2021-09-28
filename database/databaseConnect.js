@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-var-requires */
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 
@@ -8,7 +10,10 @@ function run() {
   try {
     // Connect to the MongoDB cluster
     mongoose.connect(
-      mongoAtlasUri,
+      mongoAtlasUri, {
+      //newUrlParser: true,
+
+    },
 
       () => console.log(' Mongoose is connected'),
     );

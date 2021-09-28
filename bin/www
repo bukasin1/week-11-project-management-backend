@@ -1,12 +1,17 @@
 #!/usr/bin/env node
+/* eslint-disable @typescript-eslint/no-var-requires */
+/* eslint-disable no-console */
 
 /**
  * Module dependencies.
  */
 
 var app = require('../dist/app').default;
+
 var debug = require('debug')('project-management-app-project-management-app-group-a:server');
+
 var http = require('http');
+
 var run = require("../database/databaseConnect")
 /**
  * Get port from environment and store in Express.
@@ -24,6 +29,7 @@ var server = http.createServer(app);
 /**
  * Listen on provided port, on all network interfaces.
  */
+
 
 server.listen(port,()=> console.log(`server is running on port ${port}`));
 server.on('error', onError);

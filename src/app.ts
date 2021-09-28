@@ -1,13 +1,24 @@
+
 import createError, { HttpError } from 'http-errors';
 import express, { Request, Response, NextFunction } from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
-
+import authRouter from "./routes/auth";
 import indexRouter from './routes/index';
 import usersRouter from './routes/users';
-
+//import config from 'config';
+// import dotenv from "dotenv"
+// dotenv.config()
+// if (!config.get("jwtPrivateKey")) {
+//   console.error("FATAL ERROR: jwtPrivateKey is not defined.");
+//   process.exit(1);
+// }
+//const dotenv = require("dotenv");
 const app = express();
+// dotenv.config();
+// const connectDB = require("./config/db");
+// connectDB();
 
 // view engine setup
 app.set('views', path.join(__dirname, '..', 'views'));
@@ -21,6 +32,7 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use("/auth", authRouter);
 
 // catch 404 and forward to error handler
 app.use(function (_req: Request, _res: Response, next: NextFunction) {
