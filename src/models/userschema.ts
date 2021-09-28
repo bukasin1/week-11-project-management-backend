@@ -1,7 +1,8 @@
+import { any, boolean, date, string } from 'joi';
 import mongoose from 'mongoose';
 
 export interface IUser {
-  firstnme: string;
+  firstname: string;
   lastname: string;
   email: string;
   password: string;
@@ -53,13 +54,16 @@ const userSchema = new mongoose.Schema(
     about: {
       type: String,
     },
+    role:{
+      type: String,
+    },
     isVerified: {
       type: Boolean,
       default: false,
     },
-    img: {
-      type: Buffer,
-      contentType: String,
+    avatar: {
+      type: String,
+      default: '/Avatar/Avatar.png'
     },
     resetpasswordtoken: {
       type: String,
@@ -72,6 +76,14 @@ const userSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
+  userSchema.method("toJSON", function() {
+    const { __v, _id, ...object } = this.toObject();
+    object.id = _id;
+    return object;
+  });
+ const User = mongoose.model('user', userSchema);
 
-const User = mongoose.model('user', userSchema);
-export default User;
+module.exports = User
+
+
+// export default User;
