@@ -6,12 +6,10 @@ import User from '../models/userschema';
 import loginSchema from '../validateJoi/joiAuth';
 import jwt from 'jsonwebtoken';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import dotenv from 'dotenv';
 dotenv.config();
 const secretKey = process.env.TOKEN_KEY as string;
 // TO LOGIN USER
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export async function loginPage(req: express.Request, res: express.Response) {
   const { error } = loginSchema.validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
@@ -28,5 +26,6 @@ export async function loginPage(req: express.Request, res: express.Response) {
   const token = jwt.sign({ _id: regUser._id.toString() }, secretKey, { expiresIn: '3600 seconds' });
   res.cookie('jwt', token);
   //res.status(200).send('You Have Been Login and Authenticated Successfully');
-  res.status(200).send({ regUser, token });
+  // res.status(200).send({ regUser, token });
+  res.redirect('/profile');
 }

@@ -14,6 +14,8 @@ export interface IUser {
   avater: string;
   resetpasswordtoken: string;
   resetpasswordexpires: string;
+  facebookId: string;
+  googleId: string
 }
 
 const userSchema = new mongoose.Schema<IUser>(
@@ -69,6 +71,12 @@ const userSchema = new mongoose.Schema<IUser>(
     resetpasswordexpires: {
       type: String,
     },
+    facebookId: {
+      type: String
+    },
+    googleId: {
+      type: String
+    }
   },
   {
     timestamps: true,

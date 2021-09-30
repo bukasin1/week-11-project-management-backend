@@ -61,7 +61,7 @@ export async function verifyResetPassword(req: Request, res: Response) {
     if (isValidId) {
       //line missing?
       // token = jwt.sign({ id: id }, secret, { expiresIn: '1d' });
-      res.render('index', { title: 'index', token: token });
+      res.render('password-rest', { title: 'password-rest', token: token });
     }
   } catch (err) {
     res.json({
