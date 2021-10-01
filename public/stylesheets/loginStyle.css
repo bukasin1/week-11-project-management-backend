@@ -31,3 +31,10 @@ header {
   padding: 0 10px;
   color: #333;
 }
+.google-btn {
+  color: #fff;
+  text-decoration: none;
+  font-size: 18px;
+  padding: 10px;
+  background: #ff5353;
+}

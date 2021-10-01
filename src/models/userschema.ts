@@ -1,19 +1,22 @@
 import mongoose from 'mongoose';
 
 export interface IUser {
-  firstname: string;
-  lastname: string;
-  email: string;
-  password: string;
-  gender: string;
-  role: string;
-  location: string;
-  teams: string[];
-  about: string;
-  isVerified: boolean;
-  avater: string;
-  resetpasswordtoken: string;
-  resetpasswordexpires: string;
+  _id?: string,
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  password?: string;
+  gender?: string;
+  role?: string;
+  location?: string;
+  teams?: string[];
+  about?: string;
+  isVerified?: boolean;
+  avater?: string;
+  resetpasswordtoken?: string;
+  resetpasswordexpires?: string;
+  facebookId?: string;
+  googleId?: string
 }
 
 const userSchema = new mongoose.Schema<IUser>(
@@ -69,6 +72,12 @@ const userSchema = new mongoose.Schema<IUser>(
     resetpasswordexpires: {
       type: String,
     },
+    facebookId: {
+      type: String
+    },
+    googleId: {
+      type: String
+    }
   },
   {
     timestamps: true,
