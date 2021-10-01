@@ -1,12 +1,16 @@
 // import {User, IUser}from '../models/userschema';
 import User from '../models/userschema';
+import { IUser } from '../models/userschema';
 import { Request, Response, NextFunction } from 'express'
 import { createActivationToken } from '../utils/Auth';
 const cloudinary = require('cloudinary').v2
 
 
 export async function Profile(req: Request, res: Response): Promise<void> {
-  let id = req.params.id
+  const loggedUser = req.user as IUser
+  // let id = req.params.id
+  let id = loggedUser._id
+  const user = await User.findById(id) as IUser
   let img_Url
   if (req.file) {
     const { url } = await cloudinary.uploader.upload(req.file?.path);
@@ -18,14 +22,14 @@ export async function Profile(req: Request, res: Response): Promise<void> {
     img_Url = user.avatar
   }
   const newUser = User.findByIdAndUpdate(id, {
-    firstname: req.body.firstname,
-    lastname: req.body.lastname,
-    gender: req.body.gender,
-    role: req.body.role,
-    location: req.body.location,
-    teams: req.body.teams,
-    about: req.body.about,
-    avatar: img_Url
+    firstname: req.body.firstname || user.firstname,
+    lastname: req.body.lastname || user.lastname,
+    gender: req.body.gender || user.gender,
+    role: req.body.role || user.role,
+    location: req.body.location || user.location,
+    teams: req.body.teams || user.teams,
+    about: req.body.about || user.about,
+    avatar: img_Url || user.avater
   }, (err: any) => {
     if (err) {
       res.status(404).json({

@@ -12,7 +12,7 @@ export async function changePassword(req: any, res: Response) {
   //const validUser = await bcrypt.compare( oldPassword, req.user.password)
   const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-  const newUserInfo = await User.findOneAndUpdate({ email: email }, { password: hashedPassword }, { new: true });
+  const newUserInfo = await User.findOneAndUpdate({ email: user.email }, { password: hashedPassword }, { new: true });
   res.status(200).json({ newUserInfo });
 }
 

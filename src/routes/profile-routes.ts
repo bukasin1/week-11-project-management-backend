@@ -6,7 +6,7 @@ import { authCheck, isLoggedIn } from '../middleware/auth-check';
 const router = Router();
 
 router.get('/', isLoggedIn, showProfile);
-router.put('/:id',isLoggedIn,upload, Profile)
+router.put('/edit',isLoggedIn,upload, Profile)
 router.post('/postUser', create)
 
 export default router;
