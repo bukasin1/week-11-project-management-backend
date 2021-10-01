@@ -1,21 +1,22 @@
 import mongoose from 'mongoose';
 
 export interface IUser {
-  firstname: string;
-  lastname: string;
-  email: string;
-  password: string;
-  gender: string;
-  role: string;
-  location: string;
-  teams: string[];
-  about: string;
-  isVerified: boolean;
-  avater: string;
-  resetpasswordtoken: string;
-  resetpasswordexpires: string;
-  facebookId: string;
-  googleId: string
+  _id?: string,
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  password?: string;
+  gender?: string;
+  role?: string;
+  location?: string;
+  teams?: string[];
+  about?: string;
+  isVerified?: boolean;
+  avater?: string;
+  resetpasswordtoken?: string;
+  resetpasswordexpires?: string;
+  facebookId?: string;
+  googleId?: string
 }
 
 const userSchema = new mongoose.Schema<IUser>(

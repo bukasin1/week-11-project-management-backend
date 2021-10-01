@@ -19,7 +19,7 @@ passport.use(new LocalStrategy(
       console.log(user, "user login")
       if (err) { return done(err); }
       if (!user) { return done(null, false); }
-      const validPassword = await bcrypt.compare(password, user.password);
+      const validPassword = await bcrypt.compare(password, user.password as string);
       if (!validPassword) { return done(null, false); }
       return done(null, user);
     });
@@ -49,11 +49,11 @@ type User = {
 };
 
 
-passport.serializeUser(function(user: userType, done) {
+passport.serializeUser(function(user: IUser, done) {
   done(null, user);
 });
 
-passport.deserializeUser(function(user: userType, done) {
+passport.deserializeUser(function(user: IUser, done) {
   done(null, user);
 });
 
