@@ -1,6 +1,6 @@
-const app = require('../src/app').default;
+import app from '../src/app'
 import supertest from "supertest";
-const {dbConnect, dbDisconnect} = require('../connectdb')
+import { dbConnect, dbDisconnect } from '../connectdb';
 
 beforeAll(async() => await dbConnect());
 afterAll(async() => await dbDisconnect());
@@ -19,7 +19,6 @@ describe(`Test for route`, () => {
    })
    .expect("Content-type", "application/json; charset=utf-8")
    .then((response: any) => {
-    console.log(response.body);
      expect(response.body.firstname).toBe("fola")
    })
   })
@@ -37,7 +36,6 @@ test('Test for Put', async()=>{
   })
    .expect("Content-type", "application/json")
    .then((response: any) => {
-     console.log(response.body);
 
     expect(response.body.firstname).toBe("fola")
   })
