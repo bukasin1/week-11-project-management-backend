@@ -20,11 +20,11 @@ const teamSchema = new mongoose.Schema<ITeam>(
       type: String,
       required: true
     },
-    members: {
-      type: [{
+    members: [
+      {
         userId: String
-      }]
-    }
+      }
+    ]
   },
   {
     timestamps: true,

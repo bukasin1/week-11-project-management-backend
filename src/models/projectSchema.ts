@@ -15,7 +15,12 @@ const projectSchema = new mongoose.Schema<IProject>(
     projectName: {
       type: String,
       required: true
-    }
+    },
+    collaborators: [
+      {
+        userId: String
+      }
+    ]
   },
   {
     timestamps: true,
