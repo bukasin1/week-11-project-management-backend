@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 
-export interface ITask {
-  _id?: string,
+export interface ITask extends mongoose.Document {
   title: string,
   assignedUser: string,
   description: string,
