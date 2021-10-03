@@ -23,33 +23,37 @@ const taskSchema = new mongoose.Schema<ITask>(
   {
     projectID: {
       type: String,
-      required: true
+      required: true,
     },
     title: {
       type: String,
-      required: true
+      required: true,
     },
     assignedUser: {
-    type: String,
-    required: true
+      type: String,
+      required: true,
     },
     description: {
       type: String,
-      required: true
+      required: true,
     },
-    files: [{
-      fileUrl: String
-    }],
-    comments: [{
-      content: String
-    }],
+    files: [
+      {
+        fileUrl: String,
+      },
+    ],
+    comments: [
+      {
+        content: String,
+      },
+    ],
     dueDate: {
-      type: Date
+      type: Date,
     },
     status: {
       type: String,
-      enum: ['backlog','todo', 'done']
-    }
+      enum: ['backlog', 'todo', 'done'],
+    },
   },
   {
     timestamps: true,

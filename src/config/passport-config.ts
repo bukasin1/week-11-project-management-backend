@@ -1,59 +1,60 @@
 import passport, { Profile } from 'passport';
 import { IUser } from '../models/userschema';
-import express from 'express';
-import strategy from "passport-facebook";
+import strategy from 'passport-facebook';
 import bcrypt from 'bcryptjs';
 
-
 // import user from '../models/usermodeltest';
-import User from "../models/userschema";
+import User from '../models/userschema';
 
 import localPassport from 'passport-local';
 
-const LocalStrategy = localPassport.Strategy
+const LocalStrategy = localPassport.Strategy;
 
-passport.use(new LocalStrategy(
-  function(email, password, done) {
-    console.log(email, password, "local login")
+passport.use(
+  new LocalStrategy(function (email, password, done) {
+    console.log(email, password, 'local login');
     User.findOne({ email }, async function (err: any, user: IUser) {
-      console.log(user, "user login")
-      if (err) { return done(err); }
-      if (!user) { return done(null, false); }
+      console.log(user, 'user login');
+      if (err) {
+        return done(err);
+      }
+      if (!user) {
+        return done(null, false);
+      }
       const validPassword = await bcrypt.compare(password, user.password as string);
-      if (!validPassword) { return done(null, false); }
+      if (!validPassword) {
+        return done(null, false);
+      }
       return done(null, user);
     });
-  }
-));
-
+  }),
+);
 
 const GoogleStrategy = require('passport-google-oauth20');
 const FacebookStrategy = strategy.Strategy;
 
 export interface userType {
-  _id?: string,
-  firstname?: string,
-  lastname?: string,
-  email?: string,
-  password?: string,
-  gender?: string,
-  location?: string,
-  facebookId?: string,
-  googleId?: string
+  _id?: string;
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  password?: string;
+  gender?: string;
+  location?: string;
+  facebookId?: string;
+  googleId?: string;
 }
-
 
 type User = {
   id?: string;
   userName?: string;
 };
 
-
-passport.serializeUser(function(user: IUser, done) {
+passport.serializeUser(function (user: IUser, done) {
   done(null, user);
 });
 
-passport.deserializeUser(function(user: IUser, done) {
+passport.deserializeUser(function (user: IUser, done) {
   done(null, user);
 });
 
@@ -63,7 +64,7 @@ passport.use(
     {
       clientID: process.env.GoogleClientID,
       clientSecret: process.env.GoogleClientSecret,
-      callbackURL: '/auth/google/redirect',
+      callbackURL: process.env.GoogleCallBackUrl,
     },
     (accessToken: string, refreshToken: string, profile: strategy.Profile, done: any) => {
       console.log(profile);
@@ -86,13 +87,12 @@ passport.use(
               console.log('new user created:' + newuser);
             })
             .catch((err: any) => {
-              done(null, false)
+              done(null, false);
             });
         }
       });
     },
   ),
-  // () => {}
 );
 
 //Facebook passport strategy configured
@@ -103,29 +103,28 @@ passport.use(
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET as string,
       callbackURL: process.env.FACEBOOK_CALLBACK_URL as string,
       enableProof: true,
-      profileFields: ["email", "name", "displayName"]
+      profileFields: ['email', 'name', 'displayName'],
     },
-    async function(accessToken, refreshToken, profile, done) {
-      try{
+    async function (accessToken, refreshToken, profile, done) {
+      try {
         const { id, email, first_name, last_name } = profile._json;
-        const user = await User.findOne({facebookId: id})
-        if(user) return done(null, user);
+        const user = await User.findOne({ facebookId: id });
+        if (user) return done(null, user);
         const userData = {
           email,
           firstname: first_name,
           lastname: last_name,
           isVerified: true,
-          facebookId: id
+          facebookId: id,
         };
-        const newUser = new User(userData)
+        const newUser = new User(userData);
         const saveUser = await newUser.save();
         done(null, saveUser);
-      }catch(err){
+      } catch (err) {
         // console.log(err)
-        done(null, false)
+        done(null, false);
       }
-    }
-  )
+    },
+  ),
 );
 
-// export default passport;
