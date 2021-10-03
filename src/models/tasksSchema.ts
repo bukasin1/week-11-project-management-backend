@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 export interface ITask {
   _id?: string,
   title: string,
+  projectID: string,
   assignedUser: string,
   description: string,
   files: [file],
@@ -18,10 +19,13 @@ export interface file {
 export interface comment {
   content : string
 }
-
 const taskSchema = new mongoose.Schema<ITask>(
   {
     projectID: {
+      type: String,
+      required: true
+    },
+    owner:{
       type: String,
       required: true
     },
@@ -48,7 +52,8 @@ const taskSchema = new mongoose.Schema<ITask>(
     },
     status: {
       type: String,
-      enum: ['backlog','todo', 'done']
+      enum: ['backlog','todo', 'done'],
+      default: "backlog"
     }
   },
   {
