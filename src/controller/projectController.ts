@@ -4,6 +4,7 @@ import User, { IUser, userProject } from "../models/userschema";
 import { sendSignUpmail } from "../sendemail/sendemail";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import Task, { ITask } from "../models/tasksSchema";
 const secret = process.env.SECRET_KEY_AUTH as string;
 const secretKey = process.env.TOKEN_KEY as string;
 
@@ -148,6 +149,32 @@ export async function createCollaborator(req: Request, res: Response){
     const signToken = jwt.sign({ _id: newUser._id.toString() }, secretKey, { expiresIn: '3600 seconds' });
     res.cookie('jwt', signToken);
     res.redirect('/profile')
+  }catch(err){
+    console.log(err)
+    res.status(500).send({
+      error: err
+    })
+  }
+}
+
+export async function updateTask(req: Request, res: Response){
+  try{
+    const taskId = req.params.taskID
+    const task = await Task.findById(taskId) as ITask
+    if(req.body.comment){
+
+    }
+    if(req.file){
+
+    }
+    const {title, assignedUser, description, dueDate, status} = req.body
+    console.log(title, 'title update')
+    task.title = title
+    task.assignedUser = assignedUser
+    task.description
+    task.dueDate
+    task.status
+    // await task.save()
   }catch(err){
     console.log(err)
     res.status(500).send({
