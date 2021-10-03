@@ -48,7 +48,7 @@ const taskSchema = new mongoose.Schema<ITask>(
     },
     status: {
       type: String,
-      enum: ['todo', 'in-progress', 'done']
+      enum: ['backlog','todo', 'done']
     }
   },
   {

@@ -1,5 +1,10 @@
 import mongoose from 'mongoose';
 
+export interface userProject {
+  projectId?: string,
+  projectName?: string
+}
+
 export interface IUser {
   _id?: string,
   firstname?: string;
@@ -9,6 +14,7 @@ export interface IUser {
   gender?: string;
   role?: string;
   location?: string;
+  projects?: Array<userProject>;
   teams?: string[];
   about?: string;
   isVerified?: boolean;
@@ -44,7 +50,8 @@ const userSchema = new mongoose.Schema<IUser>(
     },
     gender: {
       type: String,
-      enum: ['male', 'female'],
+      default: null,
+      enum: ['male', 'female', null],
     },
     role: {
       type: String,
@@ -52,6 +59,12 @@ const userSchema = new mongoose.Schema<IUser>(
     location: {
       type: String,
     },
+    projects: [
+      {
+        projectId: String,
+        projectName: String
+      }
+    ],
     teams: {
       type: [String],
     },

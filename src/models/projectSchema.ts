@@ -1,19 +1,21 @@
+import { TooManyRequests } from 'http-errors';
 import mongoose from 'mongoose';
 
 export interface IProject {
   _id?: string,
   owner?: string,
-  projectName?: string
+  projectName?: string,
+  collaborators?: Array<{userId?: string}>
 }
 
 const projectSchema = new mongoose.Schema<IProject>(
   {
     owner: {
-      type: String,
-      required: true
+      type: String
     },
     projectName: {
       type: String,
+      unique: true,
       required: true
     },
     collaborators: [
