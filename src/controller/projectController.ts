@@ -5,12 +5,15 @@ import { sendSignUpmail } from "../sendemail/sendemail";
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import Task, { ITask } from "../models/tasksSchema";
+const cloudinary = require('cloudinary').v2
 const secret = process.env.SECRET_KEY_AUTH as string;
 const secretKey = process.env.TOKEN_KEY as string;
 
 export async function createProject(req: Request, res: Response){
   try{
-    const existingProject = await Project.findOne({ projectName: req.body.projectName });
+    const projectName = req.body.projectName.trim().split(' ').filter((space: string) => space !== '').join(' ')
+    console.log(projectName)
+    const existingProject = await Project.findOne({ projectName });
     if (existingProject) {
       return res.status(409).send(`Project with name ${existingProject.projectName} exists already`);
     }
@@ -18,7 +21,7 @@ export async function createProject(req: Request, res: Response){
     const creator = await User.findOne({email: loggedUser.email})
     const project = await Project.create({
       owner: loggedUser._id,
-      projectName: req.body.projectName
+      projectName
     })
     creator.projects?.push({
       projectId: project._id,
@@ -161,20 +164,31 @@ export async function updateTask(req: Request, res: Response){
   try{
     const taskId = req.params.taskID
     const task = await Task.findById(taskId) as ITask
-    if(req.body.comment){
-
+    if(task){
+      const {title, assignedUser, description, dueDate, status, comment} = req.body
+      if(comment){
+        task.comments.push({content: comment})
+      }
+      if(req.file){
+        console.log(req.file)
+        const { url } = await cloudinary.uploader.upload(req.file?.path);
+        const img_Url = url
+        task.files.push({fileUrl: img_Url})
+      }
+      console.log(title, 'title update')
+      task.title = title || task.title
+      task.assignedUser = assignedUser || task.assignedUser
+      task.description = description || task.description
+      task.dueDate = dueDate || task.dueDate
+      task.status = status || task.status
+      await task.save()
+      return res.status(404).send({
+        message: `Task with id ${task._id} updated`
+      })
     }
-    if(req.file){
-
-    }
-    const {title, assignedUser, description, dueDate, status} = req.body
-    console.log(title, 'title update')
-    task.title = title
-    task.assignedUser = assignedUser
-    task.description
-    task.dueDate
-    task.status
-    // await task.save()
+    res.status(404).send({
+      message: "Task not found"
+    })
   }catch(err){
     console.log(err)
     res.status(500).send({

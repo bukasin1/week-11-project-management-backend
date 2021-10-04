@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { upload } from '../controller/file_uploads';
 import { Profile } from '../controller/profile';
 import { showProfile } from '../controller/profile-controller';
-import { addCollaborator, createCollaborator, createProject, projectInvite, signUpCollaborator } from '../controller/projectController';
+import { addCollaborator, createCollaborator, createProject, projectInvite, signUpCollaborator, updateTask } from '../controller/projectController';
 import { createTask} from '../controller/task';
 import { authCheck, isLoggedIn } from '../middleware/auth-check';
 import { projectAuth } from '../middleware/projectAuth';
@@ -16,6 +16,7 @@ router.get('/:projectID/create-collaborator/:token', addCollaborator)
 router.get('/collaborator-profile/:projectID/:email', signUpCollaborator)
 router.post('/collaborator-profile/:projectID/:email', createCollaborator)
 router.post('/:projectId/task',isLoggedIn,upload,createTask)
+router.put('/:taskID', isLoggedIn,projectAuth,upload, updateTask)
 // router.delete('deleteTask', deleteTask )
 // router.post('/:projectId/task', createTask)
 
