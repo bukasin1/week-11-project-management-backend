@@ -1,27 +1,30 @@
 import mongoose from 'mongoose';
 
-export interface ITask {
-  _id?: string,
-  title: string,
-  assignedUser: string,
-  description: string,
-  files: [file],
-  comments: [comment],
-  dueDate: Date,
-  status: string
+export interface ITask extends mongoose.Document {
+  title: string;
+  projectID: string;
+  assignedUser: string;
+  description: string;
+  files: [file];
+  comments: [comment];
+  dueDate: Date;
+  status: string;
 }
 
 export interface file {
-  fileUrl: string
+  fileUrl: string;
 }
 
 export interface comment {
-  content : string
+  content: string;
 }
-
 const taskSchema = new mongoose.Schema<ITask>(
   {
     projectID: {
+      type: String,
+      required: true,
+    },
+    owner: {
       type: String,
       required: true,
     },
@@ -53,6 +56,7 @@ const taskSchema = new mongoose.Schema<ITask>(
     status: {
       type: String,
       enum: ['backlog', 'todo', 'done'],
+      default: 'backlog',
     },
   },
   {

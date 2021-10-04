@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 
-export interface ITeam {
-  _id?: string,
+export interface ITeam extends mongoose.Document  {
   projectID?: string,
   members?: [teamMember]
 }

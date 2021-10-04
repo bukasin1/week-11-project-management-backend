@@ -11,7 +11,7 @@ import localPassport from 'passport-local';
 const LocalStrategy = localPassport.Strategy;
 
 passport.use(
-  new LocalStrategy(function (email, password, done) {
+  new LocalStrategy({ usernameField: 'email' }, function (email, password, done) {
     console.log(email, password, 'local login');
     User.findOne({ email }, async function (err: any, user: IUser) {
       console.log(user, 'user login');
@@ -33,14 +33,26 @@ passport.use(
 const GoogleStrategy = require('passport-google-oauth20');
 const FacebookStrategy = strategy.Strategy;
 
+export interface userProject {
+  projectId?: string;
+  projectName?: string;
+}
+
 export interface userType {
-  _id?: string;
   firstname?: string;
   lastname?: string;
   email?: string;
   password?: string;
   gender?: string;
+  role?: string;
   location?: string;
+  projects?: Array<userProject>;
+  teams?: string[];
+  about?: string;
+  isVerified?: boolean;
+  avater?: string;
+  resetpasswordtoken?: string;
+  resetpasswordexpires?: string;
   facebookId?: string;
   googleId?: string;
 }
@@ -50,11 +62,11 @@ type User = {
   userName?: string;
 };
 
-passport.serializeUser(function (user: IUser, done) {
+passport.serializeUser(function (user: userType, done) {
   done(null, user);
 });
 
-passport.deserializeUser(function (user: IUser, done) {
+passport.deserializeUser(function (user: userType, done) {
   done(null, user);
 });
 
@@ -67,12 +79,10 @@ passport.use(
       callbackURL: process.env.GoogleCallBackUrl,
     },
     (accessToken: string, refreshToken: string, profile: strategy.Profile, done: any) => {
-      console.log(profile);
       //check if user exists
       User.findOne({ googleId: profile.id }).then((existingUser: IUser) => {
         if (existingUser) {
           done(null, existingUser);
-          console.log('user is:' + existingUser);
         } else {
           new User({
             email: profile._json.email,
@@ -84,7 +94,6 @@ passport.use(
             .save()
             .then((newuser: IUser) => {
               done(null, newuser);
-              console.log('new user created:' + newuser);
             })
             .catch((err: any) => {
               done(null, false);
@@ -127,4 +136,3 @@ passport.use(
     },
   ),
 );
-

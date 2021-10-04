@@ -45,19 +45,4 @@ export async function Profile(req: Request, res: Response): Promise<void> {
 }
 
 
-export const create = async (req: Request, res: Response, next: NextFunction) => {
-  const user = new User({
-    firstname: req.body.firstname,
-    lastname: req.body.lastname,
-    role: req.body.role,
-    gender: req.body.gender,
-    location: req.body.location,
-    teams: req.body.teams,
-    about: req.body.about
-  })
-  const result = await user.save()
-  res.send(result)
-}
-
-
 
