@@ -43,4 +43,4 @@ export const localAuth = () => {
   })
 }
 
-export { login, googleHandler, logout, redirect, redirectHandler };
+export { login, googleHandler, logout, redirect, redirectHandler }; 
