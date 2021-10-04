@@ -1,4 +1,3 @@
-import { TooManyRequests } from 'http-errors';
 import mongoose from 'mongoose';
 
 export interface IProject {

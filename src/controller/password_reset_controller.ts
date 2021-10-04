@@ -6,14 +6,30 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 
 export async function changePassword(req: any, res: Response) {
   const user = req.user;
-  const { email, oldPassword, newPassword } = req.body;
-  console.log(email);
+  const { oldPassword, newPassword, repeatPassword } = req.body;
 
-  //const validUser = await bcrypt.compare( oldPassword, req.user.password)
-  const hashedPassword = await bcrypt.hash(newPassword, 10);
-
-  const newUserInfo = await User.findOneAndUpdate({ email: user.email }, { password: hashedPassword }, { new: true });
-  res.status(200).json({ newUserInfo });
+  const email = user.email;
+  try {
+    const validPassword = await bcrypt.compare(oldPassword, req.user.password);
+    if (validPassword) {
+      if (newPassword === repeatPassword) {
+        const newPasswordUpdate = await bcrypt.hash(newPassword, 10);
+        const newUserInfo = await User.findOneAndUpdate({ email: email }, { password: newPassword }, { new: true });
+        return res.status(200).json({
+          newUserInfo,
+        });
+      }
+    } else {
+      res.status(403).json({
+        message: 'Incorrect password',
+      });
+    }
+  } catch (err: any) {
+    res.status(400).json({
+      error: err,
+    });
+    return;
+  }
 }
 
 export async function forgetPassword(req: Request, res: Response) {

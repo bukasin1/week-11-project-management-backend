@@ -44,6 +44,7 @@ app.use('/users', usersRouter);
 app.use("/auth", authRouter);
 app.use("/password",passwordRouter);
 app.use('/profile', profileRouter);
+app.use('/teams' )
 
 // catch 404 and forward to error handler
 app.use(function (_req: Request, _res: Response, next: NextFunction) {

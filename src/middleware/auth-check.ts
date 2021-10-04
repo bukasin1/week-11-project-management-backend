@@ -14,14 +14,14 @@ const secretKey = process.env.TOKEN_KEY as string
 
 export async function isLoggedIn(req: Request, res: Response, next: NextFunction):Promise<void> {
 
-  console.log(req.cookies)
+
   if(req.cookies.jwt){
     const token: string = req.cookies.jwt;
     if (!token) res.status(401).send("Access denied. No token provided.");
 
     try {
       const decoded: any = jwt.verify(token, secretKey);
-      console.log(decoded, "auth check decode")
+
       const user = await User.findOne({_id: decoded._id})
       req.user = user;
       next();
@@ -32,7 +32,7 @@ export async function isLoggedIn(req: Request, res: Response, next: NextFunction
   }
 
   // if user is authenticated in the session, carry on
-  console.log(req.user, "auth check")
+
   if (req.isAuthenticated() && req.user !== "Non")
       return next();
   // if they aren't redirect them to the home page
