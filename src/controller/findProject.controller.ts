@@ -11,11 +11,8 @@ export const getProjectsByUser = async (req: Request, res: Response) => {
 };
 
 export const updateProjectByOwner = async (req: Request, res: Response) => {
-  const loggedIn = req.user as IUser;
   const id = req.params.projectID;
-  console.log('id', id);
   const newName = req.body.projectName;
-  console.log('newName', newName);
   try {
     const updatedProject = await Project.findOneAndUpdate({ _id: id }, { projectName: newName }, { new: true });
     res.status(201).send(updatedProject);
