@@ -30,15 +30,27 @@ passport.use(new LocalStrategy(
 const GoogleStrategy = require('passport-google-oauth20');
 const FacebookStrategy = strategy.Strategy;
 
+export interface userProject {
+  projectId?: string,
+  projectName?: string
+}
+
 export interface userType {
-  _id?: string,
-  firstname?: string,
-  lastname?: string,
-  email?: string,
-  password?: string,
-  gender?: string,
-  location?: string,
-  facebookId?: string,
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  password?: string;
+  gender?: string;
+  role?: string;
+  location?: string;
+  projects?: Array<userProject>;
+  teams?: string[];
+  about?: string;
+  isVerified?: boolean;
+  avater?: string;
+  resetpasswordtoken?: string;
+  resetpasswordexpires?: string;
+  facebookId?: string;
   googleId?: string
 }
 
@@ -49,11 +61,11 @@ type User = {
 };
 
 
-passport.serializeUser(function(user: IUser, done) {
+passport.serializeUser(function(user: userType, done) {
   done(null, user);
 });
 
-passport.deserializeUser(function(user: IUser, done) {
+passport.deserializeUser(function(user: userType, done) {
   done(null, user);
 });
 
