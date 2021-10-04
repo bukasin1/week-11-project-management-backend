@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 
-export interface ITeam {
-  _id?: string,
+export interface ITeam extends mongoose.Document  {
   projectID?: string,
   members?: [teamMember]
 }
@@ -33,3 +32,4 @@ const teamSchema = new mongoose.Schema<ITeam>(
 
 const Team = mongoose.model('team', teamSchema);
 export default Team;
+

@@ -21,7 +21,6 @@ export async function isLoggedIn(req: Request, res: Response, next: NextFunction
 
     try {
       const decoded: any = jwt.verify(token, secretKey);
-
       const user = await User.findOne({_id: decoded._id})
       req.user = user;
       next();
@@ -32,14 +31,13 @@ export async function isLoggedIn(req: Request, res: Response, next: NextFunction
   }
 
   // if user is authenticated in the session, carry on
-
-  if (req.isAuthenticated() && req.user !== "Non")
-      return next();
-  // if they aren't redirect them to the home page
   if(req.user === "Non") {
     req.flash("error_message", "Email already exists")
     return res.redirect('/auth/login');
   }
+  if (req.isAuthenticated())
+      return next();
+  // if they aren't redirect them to the home page
   res.redirect('/auth/login');
 
 }

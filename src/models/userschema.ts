@@ -5,8 +5,7 @@ export interface userProject {
   projectName?: string
 }
 
-export interface IUser {
-  _id?: string,
+export interface IUser extends mongoose.Document  {
   firstname?: string;
   lastname?: string;
   email?: string;
