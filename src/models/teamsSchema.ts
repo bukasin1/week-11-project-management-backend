@@ -32,3 +32,4 @@ const teamSchema = new mongoose.Schema<ITeam>(
 
 const Team = mongoose.model('team', teamSchema);
 export default Team;
+
