@@ -11,7 +11,9 @@ const secretKey = process.env.TOKEN_KEY as string;
 
 export async function createProject(req: Request, res: Response){
   try{
-    const existingProject = await Project.findOne({ projectName: req.body.projectName });
+    const projectName = req.body.projectName.trim().split(' ').filter((space: string) => space !== '').join(' ')
+    console.log(projectName)
+    const existingProject = await Project.findOne({ projectName });
     if (existingProject) {
       return res.status(409).send(`Project with name ${existingProject.projectName} exists already`);
     }
@@ -19,7 +21,7 @@ export async function createProject(req: Request, res: Response){
     const creator = await User.findOne({email: loggedUser.email})
     const project = await Project.create({
       owner: loggedUser._id,
-      projectName: req.body.projectName
+      projectName
     })
     creator.projects?.push({
       projectId: project._id,

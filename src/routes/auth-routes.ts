@@ -6,7 +6,8 @@ const router = Router();
 import { loginPage } from '../controller/authentication';
 
 //LOGIN PAGE
-router.post('/login', loginPage);
+// router.post('/login', loginPage);
+router.post('/login', localAuth());
 router.get('/login', login);
 router.get('/google', googleHandler);
 router.get('/logout', logout);

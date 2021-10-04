@@ -12,7 +12,7 @@ import localPassport from 'passport-local';
 
 const LocalStrategy = localPassport.Strategy
 
-passport.use(new LocalStrategy(
+passport.use(new LocalStrategy({ usernameField: "email" },
   function(email, password, done) {
     console.log(email, password, "local login")
     User.findOne({ email }, async function (err: any, user: IUser) {
@@ -78,12 +78,10 @@ passport.use(
       callbackURL: '/auth/google/redirect',
     },
     (accessToken: string, refreshToken: string, profile: strategy.Profile, done: any) => {
-      console.log(profile);
       //check if user exists
       User.findOne({ googleId: profile.id }).then((existingUser: IUser) => {
         if (existingUser) {
           done(null, existingUser);
-          console.log('user is:' + existingUser);
         } else {
           new User({
             email: profile._json.email,
@@ -95,7 +93,6 @@ passport.use(
             .save()
             .then((newuser: IUser) => {
               done(null, newuser);
-              console.log('new user created:' + newuser);
             })
             .catch((err: any) => {
               done(null, false)

@@ -38,7 +38,7 @@ export const authFacebook = () => {
 
 export const localAuth = () => {
   return  passport.authenticate('local', {
-    failureRedirect: '/',
+    failureRedirect: '/auth/login',
     successRedirect: "/profile"
   })
 }
