@@ -38,9 +38,9 @@ export const authFacebook = () => {
 
 export const localAuth = () => {
   return  passport.authenticate('local', {
-    failureRedirect: '/',
+    failureRedirect: '/auth/login',
     successRedirect: "/profile"
   })
 }
 
-export { login, googleHandler, logout, redirect, redirectHandler };
+export { login, googleHandler, logout, redirect, redirectHandler }; 

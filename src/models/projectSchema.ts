@@ -1,8 +1,7 @@
 import { TooManyRequests } from 'http-errors';
 import mongoose from 'mongoose';
 
-export interface IProject {
-  _id?: string,
+export interface IProject extends mongoose.Document  {
   owner?: string,
   projectName?: string,
   collaborators?: Array<{userId?: string}>
