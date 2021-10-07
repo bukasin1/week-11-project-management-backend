@@ -1,3 +1,6 @@
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import taskModel from '../models/tasksSchema';
 import userModel, { IUser } from '../models/userschema';
 import projectModel from '../models/projectSchema';
