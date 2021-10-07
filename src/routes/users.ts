@@ -1,7 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { signUpUser, verifyUser } from '../controller/user.controller';
 import { getProjectsByUser, updateProjectByOwner } from '../controller/findProject.controller';
-import authenticateJWT from '../authentication/auth';
 import { isLoggedIn } from '../middleware/auth-check';
 import { projectAuth } from '../middleware/projectAuth';
 const router = Router();
