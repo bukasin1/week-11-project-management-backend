@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
 
 export interface userProject {
-  projectId?: string,
-  projectName?: string
+  projectId?: string;
+  projectName?: string;
 }
 
-export interface IUser extends mongoose.Document  {
+export interface IUser extends mongoose.Document {
   firstname?: string;
   lastname?: string;
   email?: string;
@@ -21,7 +21,7 @@ export interface IUser extends mongoose.Document  {
   resetpasswordtoken?: string;
   resetpasswordexpires?: string;
   facebookId?: string;
-  googleId?: string
+  googleId?: string;
 }
 
 const userSchema = new mongoose.Schema<IUser>(
@@ -46,6 +46,7 @@ const userSchema = new mongoose.Schema<IUser>(
     password: {
       type: String,
       trim: true,
+      required: true,
     },
     gender: {
       type: String,
@@ -61,8 +62,8 @@ const userSchema = new mongoose.Schema<IUser>(
     projects: [
       {
         projectId: String,
-        projectName: String
-      }
+        projectName: String,
+      },
     ],
     teams: {
       type: [String],
@@ -85,11 +86,11 @@ const userSchema = new mongoose.Schema<IUser>(
       type: String,
     },
     facebookId: {
-      type: String
+      type: String,
     },
     googleId: {
-      type: String
-    }
+      type: String,
+    },
   },
   {
     timestamps: true,
