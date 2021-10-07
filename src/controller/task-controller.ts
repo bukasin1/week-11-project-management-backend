@@ -1,11 +1,11 @@
-/* eslint-disable no-console */
-/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+const cloudinary = require('cloudinary').v2;
 import taskModel from '../models/tasksSchema';
-import userModel, { IUser } from '../models/userschema';
+import { IUser } from '../models/userschema';
 import projectModel from '../models/projectSchema';
-
-import { Request, Response } from 'express';
+import express, { Request, Response } from 'express';
+import Task from '../models/tasksSchema';
 
 const getAllTasks = async (req: Request, res: Response) => {
   try {
@@ -13,12 +13,51 @@ const getAllTasks = async (req: Request, res: Response) => {
     const task = await taskModel.find({ assignedUser: loggedUser._id });
     res.status(201).send(task);
   } catch (err) {
-    console.log(err);
     res.status(500).send({
       error: err,
     });
   }
 };
+
+export const createTask = async (req: Request, res: Response) => {
+  try {
+    let img_Url;
+    const loggedInUser = req.user as IUser;
+    const projectId = req.params.projectId;
+    const project = await projectModel.findById(projectId);
+    if (loggedInUser._id?.toString() === project.owner) {
+      const projectID = req.params.projectId;
+      const task = new Task({
+        projectID,
+        owner: project.owner,
+        title: req.body.title,
+        description: req.body.description,
+        comments: req.body.comments,
+        assignedUser: req.body.assignedUser,
+      });
+      if (req.file) {
+        const { url } = await cloudinary.uploader.upload(req.file?.path);
+        img_Url = url;
+        task.files.push({ fileUrl: img_Url });
+      }
+      const result = await task.save();
+      return res.send(result);
+    }
+    res.send('This user cannot create task on the project');
+  } catch (err) {
+    res.send(err);
+  }
+};
+async function getTaskByStatus(req: express.Request, res: express.Response) {
+  const taskStatus = await taskModel.findOne({
+    status: req.params.status,
+  });
+  if (!taskStatus) {
+    res.status(404).send(` Task with Status "${req.params.status}" is not found `);
+  } else {
+    res.status(200).send(taskStatus);
+  }
+}
 
 const deleteTask = async (req: Request, res: Response) => {
   try {
@@ -37,11 +76,18 @@ const deleteTask = async (req: Request, res: Response) => {
     const deletedTask = taskModel.findOneAndDelete({ _id: taskId });
     res.status(201).send(deletedTask);
   } catch (err) {
-    console.log(err);
     res.status(500).send({
       error: err,
     });
   }
 };
 
-export { getAllTasks, deleteTask };
+// export const deleteTask = async(req: Request, res: Response, next: NextFunction) =>{
+//   const {id} = req.body
+//   const ID = req.params.id
+//    const value = result.filter((id)=> id !== ID)
+//    res.send('value deleted succesfully')
+
+// }
+
+export { getAllTasks, deleteTask, getTaskByStatus };

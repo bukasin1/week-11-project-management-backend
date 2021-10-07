@@ -1,7 +1,6 @@
 import sendGridMail from '@sendgrid/mail';
 import dotenv from 'dotenv';
 
-dotenv.config();
 const emailkey = process.env.SENDGRID_API_KEY as string;
 sendGridMail.setApiKey(emailkey);
 
