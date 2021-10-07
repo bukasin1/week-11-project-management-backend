@@ -3,7 +3,7 @@ import { upload } from '../controller/file_uploads';
 import { Profile } from '../controller/profile';
 import { showProfile } from '../controller/profile-controller';
 import { addCollaborator, createCollaborator, createProject, projectInvite, signUpCollaborator, updateTask } from '../controller/projectController';
-import { createTask} from '../controller/task';
+import { createTask } from '../controller/task-controller';
 import { authCheck, isLoggedIn } from '../middleware/auth-check';
 import { projectAuth } from '../middleware/projectAuth';
 const router = Router();

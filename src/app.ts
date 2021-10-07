@@ -14,7 +14,6 @@ import usersRouter from './routes/users';
 import passwordRouter from './routes/passwordRoutes';
 import profileRouter from './routes/profile-routes';
 import members from './routes/members';
-import getTaskByStatus from './routes/taskByStatus';
 import tasksRouter from './routes/task-routes';
 import teamsRoute from './routes/teamsRoute';
 
@@ -49,7 +48,6 @@ app.use('/auth', authRouter);
 app.use('/password', passwordRouter);
 app.use('/profile', profileRouter);
 app.use('/member', members);
-app.use('/status', getTaskByStatus);
 app.use('/tasks', tasksRouter);
 app.use('/', teamsRoute);
 

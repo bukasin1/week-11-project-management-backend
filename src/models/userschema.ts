@@ -46,6 +46,7 @@ const userSchema = new mongoose.Schema<IUser>(
     password: {
       type: String,
       trim: true,
+      required: true,
     },
     gender: {
       type: String,
@@ -61,8 +62,8 @@ const userSchema = new mongoose.Schema<IUser>(
     projects: [
       {
         projectId: String,
-        projectName: String
-      }
+        projectName: String,
+      },
     ],
     teams: {
       type: [String],
@@ -85,11 +86,11 @@ const userSchema = new mongoose.Schema<IUser>(
       type: String,
     },
     facebookId: {
-      type: String
+      type: String,
     },
     googleId: {
-      type: String
-    }
+      type: String,
+    },
   },
   {
     timestamps: true,
