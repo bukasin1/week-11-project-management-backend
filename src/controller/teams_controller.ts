@@ -2,10 +2,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { Request, Response } from 'express';
-import Teams, { ITeam } from '../models/teamsSchema';
+import Team, { ITeam } from '../models/teamsSchema';
 import Project from '../models/projectSchema';
 import Joi from 'joi';
 import User, { IUser } from '../models/userschema';
+import express from 'express';
+
+
+
+
 
 export async function createTeam(req: Request, res: Response) {
   const { projectID } = req.params;
@@ -27,13 +32,13 @@ export async function createTeam(req: Request, res: Response) {
         });
         return;
       }
-      const existingTeam = await Teams.findOne({ teamName });
+      const existingTeam = await Team.findOne({ teamName });
       if (existingTeam) {
         return res.status(400).json({
           message: `The name ${teamName} already exists`,
         });
       }
-      const newTeam = await Teams.create({
+      const newTeam = await Team.create({
         teamName,
         owner: loggedInUser._id,
         projectID,
@@ -56,7 +61,7 @@ export async function addMemberToTeam(req: Request, res: Response) {
   const ownerId = req.user as IUser;
   const { memberId } = req.body; ///add team members email
   const { teamID } = req.params;
-  const team: ITeam = await Teams.findOne({ _id: teamID, owner: ownerId._id });
+  const team: ITeam = await Team.findOne({ _id: teamID, owner: ownerId._id });
   if (team) {
     const { owner, teamName, members } = team; /////how could i have dealt with this without using the if block
     console.log('ownerId', ownerId, 'createdBy', owner);
@@ -70,7 +75,7 @@ export async function addMemberToTeam(req: Request, res: Response) {
     console.log(memberId, 'memberId');
     members.push({ userId: memberId }); ///ensure this line of code works
     console.log(members, 'members');
-    const updatedteam = await Teams.findByIdAndUpdate({ _id: teamID }, { members: members }, { new: true });
+    const updatedteam = await Team.findByIdAndUpdate({ _id: teamID }, { members: members }, { new: true });
     return res.status(201).json({
       message: `Successful`,
       updatedteam: updatedteam,
@@ -87,7 +92,7 @@ export async function getAllTeamMembers(req: Request, res: Response) {
   const { teamID } = req.params;
   console.log(teamID);
   try {
-    const team = await Teams.findOne({ _id: teamID });
+    const team = await Team.findOne({ _id: teamID });
     console.log('team', team);
     if (team) {
       const { members } = team;
@@ -104,12 +109,29 @@ export async function getAllTeamMembers(req: Request, res: Response) {
   }
 }
 
+
+//update members
+export async function updateMembers(req: express.Request, res: express.Response) {
+  const team = await Team.findById(req.params.teamID)
+
+  if(req.body.members){
+      const members = req.body.members
+      const addMembers = members.map((mem: string) => {
+          return {userId: mem}
+      })
+      team.members.push(...addMembers)
+  }
+
+  team.teamName = req.body.teamName || team.teamName
+  await team.save()
+
+}
 ////leave a team//////////
 export async function leaveTeam(req: Request, res: Response) {
   const { teamID } = req.params;
   const loggedInUser = req.user as IUser;
   console.log(loggedInUser, loggedInUser._id, 'user');
-  const team = await Teams.findOne({ _id: teamID }) as ITeam;
+  const team = await Team.findOne({ _id: teamID }) as ITeam;
   if (team) {
     const { members, teamName } = team;
     const user = members.filter(val => val.userId === loggedInUser._id);
@@ -121,7 +143,7 @@ export async function leaveTeam(req: Request, res: Response) {
     const updatedMembers = members.filter(val => {
       return val.userId !== loggedInUser._id;
     });
-    const updatedteam = await Teams.findByIdAndUpdate({ _id: teamID }, { members: updatedMembers }, { new: true });
+    const updatedteam = await Team.findByIdAndUpdate({ _id: teamID }, { members: updatedMembers }, { new: true });
     return res.status(200).json({
       message: `Successful removal of req.params.teamID from team ${teamName}`,
       updatedMembers: updatedMembers,

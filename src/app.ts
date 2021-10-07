@@ -13,7 +13,6 @@ import indexRouter from './routes/index';
 import usersRouter from './routes/users';
 import passwordRouter from './routes/passwordRoutes';
 import profileRouter from './routes/profile-routes';
-import members from './routes/members';
 import tasksRouter from './routes/task-routes';
 import teamsRoute from './routes/teamsRoute';
 
@@ -47,7 +46,6 @@ app.use('/users', usersRouter);
 app.use('/auth', authRouter);
 app.use('/password', passwordRouter);
 app.use('/profile', profileRouter);
-app.use('/member', members);
 app.use('/tasks', tasksRouter);
 app.use('/', teamsRoute);
 
