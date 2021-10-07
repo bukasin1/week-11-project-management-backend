@@ -1,3 +1,6 @@
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 import multer from 'multer';
 import path from 'path';
@@ -23,3 +26,4 @@ export const upload = multer({
     callback(null, true);
   }
 }).single('avatar')
+
