@@ -1,3 +1,5 @@
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-var-requires */
 import passport, { Profile } from 'passport';
 import { IUser } from '../models/userschema';
 import strategy from 'passport-facebook';
