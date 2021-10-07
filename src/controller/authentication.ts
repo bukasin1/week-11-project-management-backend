@@ -7,7 +7,6 @@ import loginSchema from '../validateJoi/joiAuth';
 import jwt from 'jsonwebtoken';
 
 import dotenv from 'dotenv';
-dotenv.config();
 const secretKey = process.env.TOKEN_KEY as string;
 // TO LOGIN USER
 export async function loginPage(req: express.Request, res: express.Response) {
