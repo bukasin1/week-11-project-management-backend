@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import bcrypt from 'bcrypt';
 import { Request, Response } from 'express';
 import User from '../models/userschema';
@@ -37,7 +39,6 @@ export async function forgetPassword(req: Request, res: Response) {
     const { email } = req.body;
     console.log(email);
     const user = await User.findOne({ email: email });
-    console.log(user);
     if (user) {
       let secret = process.env.SECRET_KEY_AUTH as string;
       const token = jwt.sign({ id: user._id }, secret, { expiresIn: '30mins' });
@@ -88,15 +89,12 @@ export async function verifyResetPassword(req: Request, res: Response) {
 
 export async function resetPassword(req: Request, res: Response) {
   //post
-  console.log(req.params);
   const token = req.params.token;
-  console.log('token-reset', token);
   try {
     // res.json(req.params)
     let secret = process.env.SECRET_KEY_AUTH as string;
     console.log('secret', secret);
     const verification = (await jwt.verify(token, secret)) as JwtPayload;
-    console.log('verification', verification);
     const id = verification.id;
     if (verification) {
       const user = await User.findOne({ _id: id });
@@ -105,9 +103,7 @@ export async function resetPassword(req: Request, res: Response) {
         let { newPassword, repeatPassword } = req.body;
         if (newPassword === repeatPassword) {
           newPassword = await bcrypt.hash(newPassword, 10);
-          console.log('newPassword', newPassword);
           const updatedUser = await User.findOneAndUpdate({ _id: id }, { password: newPassword }, { new: true });
-          console.log('updatedUser', updatedUser);
           res.status(400).json({
             updatedUser: updatedUser,
           });

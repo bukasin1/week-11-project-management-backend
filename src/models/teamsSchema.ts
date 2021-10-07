@@ -1,29 +1,35 @@
 import mongoose from 'mongoose';
 
-export interface ITeam extends mongoose.Document  {
-  projectID?: string,
-  members?: [teamMember]
+export interface ITeam extends mongoose.Document {
+  projectID?: string;
+  owner: string;
+  teamName?: string;
+  members: [teamMember];
 }
 
 export interface teamMember {
-  userId : string
+  userId: string;
 }
 
 const teamSchema = new mongoose.Schema<ITeam>(
   {
     projectID: {
       type: String,
-      required: true
+      required: true,
+    },
+    owner: {
+      type: String,
+      required: true,
     },
     teamName: {
       type: String,
-      required: true
+      required: true,
     },
     members: [
       {
-        userId: String
-      }
-    ]
+        userId: String,
+      },
+    ],
   },
   {
     timestamps: true,
@@ -32,4 +38,3 @@ const teamSchema = new mongoose.Schema<ITeam>(
 
 const Team = mongoose.model('team', teamSchema);
 export default Team;
-
