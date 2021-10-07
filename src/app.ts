@@ -13,7 +13,11 @@ import indexRouter from './routes/index';
 import usersRouter from './routes/users';
 import passwordRouter from './routes/passwordRoutes';
 import profileRouter from './routes/profile-routes';
+<<<<<<< HEAD
 import getTaskByStatus from './routes/taskByStatus';
+=======
+import members from './routes/members';
+>>>>>>> 9fd6293d4889af3c0df4dbae13b9047bca840669
 import tasksRouter from './routes/task-routes';
 import teamsRoute from './routes/teamsRoute';
 
@@ -47,7 +51,6 @@ app.use('/users', usersRouter);
 app.use('/auth', authRouter);
 app.use('/password', passwordRouter);
 app.use('/profile', profileRouter);
-app.use('/status', getTaskByStatus);
 app.use('/tasks', tasksRouter);
 app.use('/', teamsRoute);
 

@@ -3,7 +3,7 @@ import { login, googleHandler, logout, redirect, redirectHandler, getFacebookAut
 const router = Router();
 
 
-import { loginPage } from '../controller/authentication';
+import { loginPage } from '../controller/auth-controller';
 
 //LOGIN PAGE
 // router.post('/login', loginPage);
