@@ -1,6 +1,5 @@
 import { Router, Request, Response } from 'express';
 import { signUpUser, verifyUser } from '../controller/user.controller';
-import { getProjectsByUser, updateProjectByOwner } from '../controller/findProject.controller';
 import authenticateJWT from '../authentication/auth';
 import { isLoggedIn } from '../middleware/auth-check';
 import { projectAuth } from '../middleware/projectAuth';
@@ -13,7 +12,5 @@ router.get('/', function (_req: Request, res: Response) {
 router.post('/signup', signUpUser);
 
 router.post('/verify/:id', verifyUser);
-router.get('/getproject', isLoggedIn, getProjectsByUser);
-router.post('/getproject/:projectID', isLoggedIn, projectAuth, updateProjectByOwner);
 
 export default router;
