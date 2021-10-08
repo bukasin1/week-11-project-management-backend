@@ -199,12 +199,9 @@ export async function updateTask(req: Request, res: Response){
 
 export const getProjectsByUser = async (req: Request, res: Response) => {
   const loggedIn = req.user as IUser;
-  const project = await Project.find({ owner: loggedIn._id });
-  const projects = loggedIn.projects
-  const projs = projects?.map(async(pro) => {
-    return await Project.findById(pro.projectId)
-  }) as Promise<IProject>[]
-  const allProjects = await Promise.all(projs)
+  const user = await User.findById(loggedIn._id)
+  const projects = user.projects
+
   res.status(200).send(projects);
 };
 
