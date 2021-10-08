@@ -6,6 +6,6 @@ import { projectAuth } from '../middleware/projectAuth';
 
 router.get('/', isLoggedIn, getAllTasks);
 router.get('/:projectID/:status',isLoggedIn, getTaskByStatus);
-router.get('/deletetask/:taskID', isLoggedIn, projectAuth, deleteTask);
+router.delete('/deletetask/:taskID', isLoggedIn, projectAuth, deleteTask);
 
 export default router;
