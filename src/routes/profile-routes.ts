@@ -15,9 +15,9 @@ router.post('/:projectID/project-invite', isLoggedIn,projectAuth, projectInvite)
 router.get('/:projectID/create-collaborator/:token', addCollaborator)
 router.get('/collaborator-profile/:projectID/:email', signUpCollaborator)
 router.post('/collaborator-profile/:projectID/:email', createCollaborator)
-router.post('/:projectId/task',isLoggedIn,upload,createTask)
+router.post('/:projectID/task',isLoggedIn, projectAuth, upload,createTask)
 router.put('/:taskID', isLoggedIn,projectAuth,upload, updateTask)
-router.get('/getproject', isLoggedIn, getProjectsByUser);
+router.get('/getprojects', isLoggedIn, getProjectsByUser);
 router.post('/getproject/:projectID', isLoggedIn, projectAuth, updateProjectByOwner);
 // router.delete('deleteTask', deleteTask )
 // router.post('/:projectId/task', createTask)
