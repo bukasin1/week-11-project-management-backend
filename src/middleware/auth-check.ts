@@ -14,7 +14,7 @@ const secretKey = process.env.TOKEN_KEY as string
 
 export async function isLoggedIn(req: Request, res: Response, next: NextFunction):Promise<void> {
 
-  console.log(req.cookies)
+  //console.log(req.cookies)
   if(req.cookies.jwt){
     const token: string = req.cookies.jwt;
     if (!token) res.status(401).send("Access denied. No token provided.");

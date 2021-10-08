@@ -46,6 +46,7 @@ const userSchema = new mongoose.Schema<IUser>(
     password: {
       type: String,
       trim: true,
+      required: true
     },
     gender: {
       type: String,

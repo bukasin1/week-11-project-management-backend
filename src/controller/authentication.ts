@@ -13,7 +13,9 @@ const secretKey = process.env.TOKEN_KEY as string;
 export async function loginPage(req: express.Request, res: express.Response) {
   try{
     const { error } = loginSchema.validate(req.body);
+  
     if (error) return res.status(400).send(error.details[0].message);
+    
     const email = req.body.email;
     console.log('email', email);
     let regUser = await User.findOne({ email: email }).exec();
