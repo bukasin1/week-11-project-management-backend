@@ -31,6 +31,8 @@ export async function projectAuth(req: Request, res: Response, next: NextFunctio
     return;
   } catch (err) {
     console.log(err);
-    res.send(err);
+    res.status(200).json({
+      message: 'You are not the owner of the project',
+    });
   }
 }
