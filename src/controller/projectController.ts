@@ -199,10 +199,16 @@ export async function updateTask(req: Request, res: Response){
 
 export const getProjectsByUser = async (req: Request, res: Response) => {
   const loggedIn = req.user as IUser;
-  const user = await User.findById(loggedIn._id)
+  const user = await User.findById(loggedIn._id) as IUser
   const projects = user.projects
 
-  res.status(200).send(projects);
+  // const project = await Project.find({ owner: loggedIn._id });
+  const projs = projects?.map(async(pro) => {
+    return await Project.findById(pro.projectId)
+  }) as Promise<IProject>[]
+  const allProjects = await Promise.all(projs)
+
+  res.status(200).send(allProjects);
 };
 
 export const updateProjectByOwner = async (req: Request, res: Response) => {
