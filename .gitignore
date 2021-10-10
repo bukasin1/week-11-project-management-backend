@@ -6,3 +6,6 @@ index.html
 localdatabase
 __tests__/db.ts
 __tests__/user.route.test.ts
+src/models/taskschema.ts
+README.md
+src/routes/findProjectRoute.ts

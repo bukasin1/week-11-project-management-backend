@@ -3,10 +3,11 @@ import { login, googleHandler, logout, redirect, redirectHandler, getFacebookAut
 const router = Router();
 
 
-import { loginPage } from '../controller/authentication';
+import { loginPage } from '../controller/auth-controller';
 
 //LOGIN PAGE
-router.post('/login', loginPage);
+// router.post('/login', loginPage);
+router.post('/login', localAuth());
 router.get('/login', login);
 router.get('/google', googleHandler);
 router.get('/logout', logout);

@@ -13,6 +13,8 @@ import indexRouter from './routes/index';
 import usersRouter from './routes/users';
 import passwordRouter from './routes/passwordRoutes';
 import profileRouter from './routes/profile-routes';
+import tasksRouter from './routes/task-routes';
+import teamsRoute from './routes/teamsRoute';
 
 const app = express();
 require('./config/passport-config');
@@ -41,11 +43,14 @@ app.use(express.static(path.join(__dirname, '..', 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use("/auth", authRouter);
-app.use("/password",passwordRouter);
+app.use('/auth', authRouter);
+app.use('/password', passwordRouter);
 app.use('/profile', profileRouter);
+app.use('/tasks', tasksRouter);
+app.use('/', teamsRoute);
 
 // catch 404 and forward to error handler
+
 app.use(function (_req: Request, _res: Response, next: NextFunction) {
   next(createError(404));
 });
