@@ -80,31 +80,36 @@ passport.use(
       clientSecret: process.env.GoogleClientSecret,
       callbackURL: process.env.GoogleCallBackUrl,
     },
-    (accessToken: string, refreshToken: string, profile: strategy.Profile, done: any) => {
+    async (accessToken: string, refreshToken: string, profile: strategy.Profile, done: any) => {
       //check if user exists
-      User.findOne({ googleId: profile.id }).then((existingUser: IUser) => {
-        if (existingUser) {
-          done(null, existingUser);
-        } else {
-          new User({
-            email: profile._json.email,
-            firstname: profile.name?.givenName,
-            lastname: profile.name?.familyName,
-            isVerified: true,
-            googleId: profile.id,
-          })
-            .save()
-            .then((newuser: IUser) => {
-              done(null, newuser);
-            })
-            .catch((err: any) => {
-              done(null, false);
-            });
-        }
+      const existingUser = await User.findOne({ googleId: profile.id });
+      if (existingUser) {
+        console.log('Joseph: user exists!!!');
+        done(null, existingUser);
+        return;
+      }
+
+      console.log('Joseph: creating new User');
+      const newUser = await User.create({
+        email: profile._json.email,
+        firstname: profile.name?.givenName,
+        lastname: profile.name?.familyName,
+        isVerified: true,
+        googleId: profile.id,
       });
+      console.log('Joseph: done creating new user.');
+      if (newUser) {
+        console.log('Joseph: returning new user');
+        done(null, newUser);
+        return;
+      } else {
+        console.log("Joseph: couldn't create new user.");
+        done(null, false);
+      }
     },
   ),
 );
+
 
 //Facebook passport strategy configured
 passport.use(
