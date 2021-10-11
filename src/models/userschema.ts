@@ -1,22 +1,30 @@
 import mongoose from 'mongoose';
 
-export interface IUser {
-  firstnme: string;
-  lastname: string;
-  email: string;
-  password: string;
-  gender: string;
-  role: string;
-  location: string;
-  teams: string[];
-  about: string;
-  isVerified: boolean;
-  img: string;
-  resetpasswordtoken: string;
-  resetpasswordexpires: Date;
+export interface userProject {
+  projectId?: string,
+  projectName?: string
 }
 
-const userSchema = new mongoose.Schema(
+export interface IUser extends mongoose.Document  {
+  firstname?: string;
+  lastname?: string;
+  email?: string;
+  password?: string;
+  gender?: string;
+  role?: string;
+  location?: string;
+  projects?: Array<userProject>;
+  teams?: string[];
+  about?: string;
+  isVerified?: boolean;
+  avater?: string;
+  resetpasswordtoken?: string;
+  resetpasswordexpires?: string;
+  facebookId?: string;
+  googleId?: string
+}
+
+const userSchema = new mongoose.Schema<IUser>(
   {
     firstname: {
       type: String,
@@ -37,18 +45,28 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: true,
       trim: true,
+      required: true,
     },
     gender: {
       type: String,
-      enum: ['male', 'female'],
+      default: null,
+      enum: ['male', 'female', null],
+    },
+    role: {
+      type: String,
     },
     location: {
       type: String,
     },
+    projects: [
+      {
+        projectId: String,
+        projectName: String,
+      },
+    ],
     teams: {
-      type: Array,
+      type: [String],
     },
     about: {
       type: String,
@@ -57,14 +75,20 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    img: {
-      type: Buffer,
+    avatar: {
+      type: String,
       contentType: String,
     },
     resetpasswordtoken: {
       type: String,
     },
     resetpasswordexpires: {
+      type: String,
+    },
+    facebookId: {
+      type: String,
+    },
+    googleId: {
       type: String,
     },
   },

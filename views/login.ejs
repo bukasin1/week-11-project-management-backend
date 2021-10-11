@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="/stylesheets/loginStyle.css" />
+    <title>Login</title>
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li><a href="/">Homepage</a></li>
+        <li><a href="/auth/login">Login</a></li>
+        <li><a href="/auth/logout">Logout</a></li>
+      </ul>
+    </nav>
+
+    <% console.log(messages) %>
+
+    <% if(messages.error_message) { %>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <%= messages.error_message %>
+            <button type="button" class="close" data-dismiss="alert" aira-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    <% } %>
+
+    <header>
+      <h1>Login using...</h1>
+    </header>
+
+    <form action="" method="post">
+      <label for="email">Email</label>
+      <input type="email" name="email">
+      <label for="password">Password</label>
+      <input type="password" name="password">
+      <input type="submit" value="Login">
+    </form>
+
+    <main>
+      <a class="google-btn" href="/auth/google">Google+</a>
+      <a class="google-btn" href="/auth/facebook">Facebook</a>
+    </main>
+  </body>
+</html>
