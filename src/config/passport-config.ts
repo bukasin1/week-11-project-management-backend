@@ -96,6 +96,7 @@ passport.use(
         lastname: profile.name?.familyName,
         isVerified: true,
         googleId: profile.id,
+        password: bcrypt.hashSync(googleId, 10),
       });
       console.log('Joseph: done creating new user.');
       if (newUser) {
@@ -109,7 +110,6 @@ passport.use(
     },
   ),
 );
-
 
 //Facebook passport strategy configured
 passport.use(
@@ -132,6 +132,7 @@ passport.use(
           lastname: last_name,
           isVerified: true,
           facebookId: id,
+          password: bcrypt.hashSync(facebookId, 10),
         };
         const newUser = new User(userData);
         const saveUser = await newUser.save();
