@@ -111,7 +111,7 @@ passport.use(
   ),
 );
 
-//Facebook passport strategy configured
+//Facebook passport
 passport.use(
   new FacebookStrategy(
     {
@@ -131,6 +131,7 @@ passport.use(
           firstname: first_name,
           lastname: last_name,
           isVerified: true,
+
           facebookId: id,
           password: bcrypt.hashSync(id, 10),
         };
