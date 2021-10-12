@@ -44,30 +44,35 @@ passport_1.default.use(new GoogleStrategy({
     callbackURL: process.env.GoogleCallBackUrl,
 }, async (accessToken, refreshToken, profile, done) => {
     var _a, _b;
-    //check if user exists
-    const existingUser = await userschema_1.default.findOne({ googleId: profile.id });
-    if (existingUser) {
-        console.log('Joseph: user exists!!!');
-        done(null, existingUser);
-        return;
+    try {
+        //check if user exists
+        const existingUser = await userschema_1.default.findOne({ googleId: profile.id });
+        if (existingUser) {
+            console.log('Joseph: user exists!!!');
+            done(null, existingUser);
+            return;
+        }
+        console.log('Joseph: creating new User');
+        const newUser = await userschema_1.default.create({
+            email: profile._json.email,
+            firstname: (_a = profile.name) === null || _a === void 0 ? void 0 : _a.givenName,
+            lastname: (_b = profile.name) === null || _b === void 0 ? void 0 : _b.familyName,
+            isVerified: true,
+            googleId: profile.id,
+            password: bcryptjs_1.default.hashSync(profile.id, 10),
+        });
+        console.log('Joseph: done creating new user.');
+        if (newUser) {
+            console.log('Joseph: returning new user');
+            done(null, newUser);
+            return;
+        }
+        else {
+            console.log("Joseph: couldn't create new user.");
+            done(null, false);
+        }
     }
-    console.log('Joseph: creating new User');
-    const newUser = await userschema_1.default.create({
-        email: profile._json.email,
-        firstname: (_a = profile.name) === null || _a === void 0 ? void 0 : _a.givenName,
-        lastname: (_b = profile.name) === null || _b === void 0 ? void 0 : _b.familyName,
-        isVerified: true,
-        googleId: profile.id,
-        password: bcryptjs_1.default.hashSync(profile.id, 10),
-    });
-    console.log('Joseph: done creating new user.');
-    if (newUser) {
-        console.log('Joseph: returning new user');
-        done(null, newUser);
-        return;
-    }
-    else {
-        console.log("Joseph: couldn't create new user.");
+    catch (err) {
         done(null, false);
     }
 }));
