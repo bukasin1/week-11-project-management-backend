@@ -1,4 +1,4 @@
-name: Node.js CI
+name: Jaraaa project management ci/cd
 
 on:
   push:
@@ -12,15 +12,27 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x, 12.x, 14.x, 15.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        node-version: [14.x]
 
     steps:
+    - name: checkout the Jaraaa project management repository
     - uses: actions/checkout@v2
+    
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-    - run: yarn ci
-    - run: yarn run --if-present
+    - run: yarn install --frozen-lockfile
     - run: yarn test
+    - run: yarn tsc
+    
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+          heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
+          heroku_email: ${{secrets.HEROKU_EMAIL}}
