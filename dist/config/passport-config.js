@@ -58,6 +58,7 @@ passport_1.default.use(new GoogleStrategy({
         lastname: (_b = profile.name) === null || _b === void 0 ? void 0 : _b.familyName,
         isVerified: true,
         googleId: profile.id,
+        password: bcryptjs_1.default.hashSync(profile.id, 10),
     });
     console.log('Joseph: done creating new user.');
     if (newUser) {
@@ -70,7 +71,7 @@ passport_1.default.use(new GoogleStrategy({
         done(null, false);
     }
 }));
-//Facebook passport strategy configured
+//Facebook passport
 passport_1.default.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_CLIENT_ID,
     clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
@@ -89,6 +90,7 @@ passport_1.default.use(new FacebookStrategy({
             lastname: last_name,
             isVerified: true,
             facebookId: id,
+            password: bcryptjs_1.default.hashSync(id, 10),
         };
         const newUser = new userschema_1.default(userData);
         const saveUser = await newUser.save();
