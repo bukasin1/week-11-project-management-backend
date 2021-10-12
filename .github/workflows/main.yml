@@ -23,7 +23,6 @@ jobs:
         with:
          node-version: ${{ matrix.node-version }}
       - run: yarn install --frozen-lockfile
-      - run: yarn test
       - run: yarn tsc
     
   deploy:
