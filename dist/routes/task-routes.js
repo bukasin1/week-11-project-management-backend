@@ -11,5 +11,9 @@ const projectAuth_1 = require("../middleware/projectAuth");
 router.get('/', auth_check_1.isLoggedIn, task_controller_1.getAllTasks);
 router.get('/:projectID/:status', auth_check_1.isLoggedIn, task_controller_1.getTaskByStatus);
 router.delete('/deletetask/:taskID', auth_check_1.isLoggedIn, projectAuth_1.projectAuth, task_controller_1.deleteTask);
+router.post('/:taskID/create-comment', auth_check_1.isLoggedIn, task_controller_1.createComment);
+router.get('/get/:taskID/comments', auth_check_1.isLoggedIn, task_controller_1.getComments);
+router.put('/:taskID/:commentID/edit-comment', auth_check_1.isLoggedIn, projectAuth_1.projectAuth, task_controller_1.editComment);
+router.delete('/:taskID/:commentID/deletecomment', auth_check_1.isLoggedIn, projectAuth_1.projectAuth, task_controller_1.deleteComment);
 exports.default = router;
 //# sourceMappingURL=task-routes.js.map

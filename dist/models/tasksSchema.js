@@ -28,11 +28,29 @@ const taskSchema = new mongoose_1.default.Schema({
     files: [
         {
             fileUrl: String,
+            uploadedBy: {
+                userId: String,
+                userName: String
+            }
         },
     ],
     comments: [
         {
-            content: String,
+            createdBy: {
+                userId: String,
+                userName: String
+            },
+            content: {
+                type: String,
+                required: true
+            },
+            createdOn: {
+                type: Date,
+                default: Date.now()
+            },
+            updatedOn: {
+                type: Date
+            }
         },
     ],
     dueDate: {

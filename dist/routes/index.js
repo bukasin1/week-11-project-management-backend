@@ -4,6 +4,7 @@ const express_1 = require("express");
 const router = (0, express_1.Router)();
 /* GET home page. */
 router.get('/', function (req, res) {
+    console.log(req.user, 'user', req.isAuthenticated());
     if (req.isAuthenticated())
         return res.redirect('/profile');
     res.render('index', { title: 'Express' });

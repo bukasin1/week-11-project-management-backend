@@ -3,13 +3,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateProjectByOwner = exports.getProjectsByUser = exports.updateTask = exports.createCollaborator = exports.signUpCollaborator = exports.addCollaborator = exports.projectInvite = exports.createProject = void 0;
+exports.updateProjectByOwner = exports.getProjectsByUser = exports.createCollaborator = exports.signUpCollaborator = exports.addCollaborator = exports.projectInvite = exports.createProject = void 0;
 const projectSchema_1 = __importDefault(require("../models/projectSchema"));
 const userschema_1 = __importDefault(require("../models/userschema"));
 const sendemail_1 = require("../sendemail/sendemail");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const tasksSchema_1 = __importDefault(require("../models/tasksSchema"));
 const cloudinary = require('cloudinary').v2;
 const secret = process.env.SECRET_KEY_AUTH;
 const secretKey = process.env.TOKEN_KEY;
@@ -173,45 +172,6 @@ async function createCollaborator(req, res) {
     }
 }
 exports.createCollaborator = createCollaborator;
-async function updateTask(req, res) {
-    var _a;
-    try {
-        const taskId = req.params.taskID;
-        const task = await tasksSchema_1.default.findById(taskId);
-        if (task) {
-            const { title, assignedUser, description, dueDate, status, comment } = req.body;
-            if (comment) {
-                task.comments.push({ content: comment });
-            }
-            if (req.file) {
-                console.log(req.file);
-                const { url } = await cloudinary.uploader.upload((_a = req.file) === null || _a === void 0 ? void 0 : _a.path);
-                const img_Url = url;
-                task.files.push({ fileUrl: img_Url });
-            }
-            console.log(title, 'title update');
-            task.title = title || task.title;
-            task.assignedUser = assignedUser || task.assignedUser;
-            task.description = description || task.description;
-            task.dueDate = dueDate || task.dueDate;
-            task.status = status || task.status;
-            await task.save();
-            return res.status(404).send({
-                message: `Task with id ${task._id} updated`
-            });
-        }
-        res.status(404).send({
-            message: "Task not found"
-        });
-    }
-    catch (err) {
-        console.log(err);
-        res.status(500).send({
-            error: err
-        });
-    }
-}
-exports.updateTask = updateTask;
 const getProjectsByUser = async (req, res) => {
     const loggedIn = req.user;
     const user = await userschema_1.default.findById(loggedIn._id);
