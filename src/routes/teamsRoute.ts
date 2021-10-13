@@ -8,9 +8,9 @@ import {projectAuth} from '../middleware/projectAuth'
 
 const router = Router()
 
-router.post('/:projectID/createteam', isLoggedIn, createTeam)
-router.post('/:teamID/addmembertoteam', isLoggedIn, addMemberToTeam)
-router.put('/updateTeam/:teamID', projectAuth, updateMembers);
+router.post('/:projectID/createteam', isLoggedIn, projectAuth, createTeam)
+router.post('/:teamID/addmembertoteam', isLoggedIn, projectAuth, addMemberToTeam)
+router.put('/:teamID/updateTeam', isLoggedIn, projectAuth, updateMembers);
 router.get('/:teamID/getallteammembers', isLoggedIn, getAllTeamMembers)
 router.delete('/:teamID/leaveteam', isLoggedIn, leaveTeam)
 

@@ -124,8 +124,10 @@ export async function updateMembers(req: express.Request, res: express.Response)
 
   team.teamName = req.body.teamName || team.teamName
   await team.save()
-  res.send(team)
-
+  return res.status(201).json({
+    message: `Successful`,
+    updatedteam: team
+  });
 }
 ////leave a team//////////
 export async function leaveTeam(req: Request, res: Response) {
