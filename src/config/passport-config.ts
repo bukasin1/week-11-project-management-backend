@@ -80,33 +80,42 @@ passport.use(
       clientSecret: process.env.GoogleClientSecret,
       callbackURL: process.env.GoogleCallBackUrl,
     },
-    (accessToken: string, refreshToken: string, profile: strategy.Profile, done: any) => {
-      //check if user exists
-      User.findOne({ googleId: profile.id }).then((existingUser: IUser) => {
+    async (accessToken: string, refreshToken: string, profile: strategy.Profile, done: any) => {
+      try {
+        //check if user exists
+        const existingUser = await User.findOne({ googleId: profile.id });
         if (existingUser) {
+          console.log('Joseph: user exists!!!');
           done(null, existingUser);
-        } else {
-          new User({
-            email: profile._json.email,
-            firstname: profile.name?.givenName,
-            lastname: profile.name?.familyName,
-            isVerified: true,
-            googleId: profile.id,
-          })
-            .save()
-            .then((newuser: IUser) => {
-              done(null, newuser);
-            })
-            .catch((err: any) => {
-              done(null, false);
-            });
+          return;
         }
-      });
+
+        console.log('Joseph: creating new User');
+        const newUser = await User.create({
+          email: profile._json.email,
+          firstname: profile.name?.givenName,
+          lastname: profile.name?.familyName,
+          isVerified: true,
+          googleId: profile.id,
+          password: bcrypt.hashSync(profile.id, 10),
+        });
+        console.log('Joseph: done creating new user.');
+        if (newUser) {
+          console.log('Joseph: returning new user');
+          done(null, newUser);
+          return;
+        } else {
+          console.log("Joseph: couldn't create new user.");
+          done(null, false);
+        }
+      } catch (err) {
+        done(null, false);
+      }
     },
   ),
 );
 
-//Facebook passport strategy configured
+//Facebook passport
 passport.use(
   new FacebookStrategy(
     {
@@ -126,7 +135,9 @@ passport.use(
           firstname: first_name,
           lastname: last_name,
           isVerified: true,
+
           facebookId: id,
+          password: bcrypt.hashSync(id, 10),
         };
         const newUser = new User(userData);
         const saveUser = await newUser.save();
