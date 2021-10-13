@@ -54,7 +54,14 @@ export const createTask = async (req: Request, res: Response) => {
       if (req.file) {
         const { url } = await cloudinary.uploader.upload(req.file?.path);
         img_Url = url;
-        task.files.push({ fileUrl: img_Url });
+        const newFile = {
+          fileUrl: img_Url,
+          uploadedBy: {
+            userId: loggedInUser._id,
+            userName: loggedInUser.firstname as string + ' ' + loggedInUser.lastname as string
+          },
+        }
+        task.files.push(newFile)
       }
       const result = await task.save();
       return res.send(result);
@@ -80,7 +87,14 @@ export async function updateTask(req: Request, res: Response){
         console.log(req.file)
         const { url } = await cloudinary.uploader.upload(req.file?.path);
         const img_Url = url
-        task.files.push({fileUrl: img_Url})
+        const newFile = {
+          fileUrl: img_Url,
+          uploadedBy: {
+            userId: loggedInUser._id,
+            userName: loggedInUser.firstname as string + ' ' + loggedInUser.lastname as string
+          },
+        }
+        task.files.push(newFile)
       }
       console.log(title, 'title update')
       task.title = title || task.title
@@ -207,10 +221,6 @@ export async function editComment(req: Request, res: Response){
     const editedComment = {
       ...{content, createdBy, createdOn, _id},
       content: req.body.comment || content,
-      editedBy: {
-        userId: loggedInUser._id,
-        userName: loggedInUser.firstname as string + loggedInUser.lastname as string
-      },
       updatedOn: Date.now()
     }
     task.comments[commentIndex] = editedComment
