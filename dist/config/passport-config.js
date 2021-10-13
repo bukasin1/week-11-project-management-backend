@@ -42,32 +42,41 @@ passport_1.default.use(new GoogleStrategy({
     clientID: process.env.GoogleClientID,
     clientSecret: process.env.GoogleClientSecret,
     callbackURL: process.env.GoogleCallBackUrl,
-}, (accessToken, refreshToken, profile, done) => {
-    //check if user exists
-    userschema_1.default.findOne({ googleId: profile.id }).then((existingUser) => {
-        var _a, _b;
+}, async (accessToken, refreshToken, profile, done) => {
+    var _a, _b;
+    try {
+        //check if user exists
+        const existingUser = await userschema_1.default.findOne({ googleId: profile.id });
         if (existingUser) {
+            console.log('Joseph: user exists!!!');
             done(null, existingUser);
+            return;
+        }
+        console.log('Joseph: creating new User');
+        const newUser = await userschema_1.default.create({
+            email: profile._json.email,
+            firstname: (_a = profile.name) === null || _a === void 0 ? void 0 : _a.givenName,
+            lastname: (_b = profile.name) === null || _b === void 0 ? void 0 : _b.familyName,
+            isVerified: true,
+            googleId: profile.id,
+            password: bcryptjs_1.default.hashSync(profile.id, 10),
+        });
+        console.log('Joseph: done creating new user.');
+        if (newUser) {
+            console.log('Joseph: returning new user');
+            done(null, newUser);
+            return;
         }
         else {
-            new userschema_1.default({
-                email: profile._json.email,
-                firstname: (_a = profile.name) === null || _a === void 0 ? void 0 : _a.givenName,
-                lastname: (_b = profile.name) === null || _b === void 0 ? void 0 : _b.familyName,
-                isVerified: true,
-                googleId: profile.id,
-            })
-                .save()
-                .then((newuser) => {
-                done(null, newuser);
-            })
-                .catch((err) => {
-                done(null, false);
-            });
+            console.log("Joseph: couldn't create new user.");
+            done(null, false);
         }
-    });
+    }
+    catch (err) {
+        done(null, false);
+    }
 }));
-//Facebook passport strategy configured
+//Facebook passport
 passport_1.default.use(new FacebookStrategy({
     clientID: process.env.FACEBOOK_CLIENT_ID,
     clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
@@ -86,6 +95,7 @@ passport_1.default.use(new FacebookStrategy({
             lastname: last_name,
             isVerified: true,
             facebookId: id,
+            password: bcryptjs_1.default.hashSync(id, 10),
         };
         const newUser = new userschema_1.default(userData);
         const saveUser = await newUser.save();
