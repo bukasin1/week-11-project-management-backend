@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { Request, Response } from 'express';
-import Team, { ITeam } from '../models/teamsSchema';
+import Team, { ITeam, teamMember } from '../models/teamsSchema';
 import Project from '../models/projectSchema';
 import Joi from 'joi';
 import User, { IUser } from '../models/userschema';
@@ -124,6 +124,7 @@ export async function updateMembers(req: express.Request, res: express.Response)
 
   team.teamName = req.body.teamName || team.teamName
   await team.save()
+  res.send(team)
 
 }
 ////leave a team//////////
@@ -155,3 +156,41 @@ export async function leaveTeam(req: Request, res: Response) {
     });
   }
 }
+
+
+export async function getUserDetails(req: Request, res: Response){
+const { teamID } = req.params;
+ const existingTeam = await Team.findOne({_id: teamID}) as ITeam
+ try {
+ if(!existingTeam){
+   res.status(404).json({
+     message: "Team doesn't exist"
+   })
+ }
+
+ const members = existingTeam.members
+ const teamMembers = members.map(async(member:teamMember) => {
+  const  userInfo  = await User.findOne({ _id: member.userId})
+  const { firstname, lastname, role, location } = userInfo
+
+  return {
+    firstname: firstname,
+    lastname: lastname,
+    role: role,
+    location: location,
+  }
+
+ })
+
+  res.status(400).json({
+    data: teamMembers
+  })
+
+}catch (err){
+  res.status(500).json({
+    message: 'failed',
+    error: 'error'
+  })
+}
+}
+
