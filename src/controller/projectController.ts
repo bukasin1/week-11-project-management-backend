@@ -160,43 +160,6 @@ export async function createCollaborator(req: Request, res: Response){
   }
 }
 
-export async function updateTask(req: Request, res: Response){
-  try{
-    const taskId = req.params.taskID
-    const task = await Task.findById(taskId) as ITask
-    if(task){
-      const {title, assignedUser, description, dueDate, status, comment} = req.body
-      if(comment){
-        task.comments.push({content: comment})
-      }
-      if(req.file){
-        console.log(req.file)
-        const { url } = await cloudinary.uploader.upload(req.file?.path);
-        const img_Url = url
-        task.files.push({fileUrl: img_Url})
-      }
-      console.log(title, 'title update')
-      task.title = title || task.title
-      task.assignedUser = assignedUser || task.assignedUser
-      task.description = description || task.description
-      task.dueDate = dueDate || task.dueDate
-      task.status = status || task.status
-      await task.save()
-      return res.status(404).send({
-        message: `Task with id ${task._id} updated`
-      })
-    }
-    res.status(404).send({
-      message: "Task not found"
-    })
-  }catch(err){
-    console.log(err)
-    res.status(500).send({
-      error: err
-    })
-  }
-}
-
 export const getProjectsByUser = async (req: Request, res: Response) => {
   const loggedIn = req.user as IUser;
   const user = await User.findById(loggedIn._id) as IUser
