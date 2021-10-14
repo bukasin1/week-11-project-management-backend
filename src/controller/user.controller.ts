@@ -25,11 +25,9 @@ export const signUpUser = async (req: Request, res: Response) => {
   });
 
   const message = `
-  <form action="https://jaraaa.herokuapp.com/users/verify/${email}" method="post">
   <p>Thank you for signing up with Project App. Please click verify below to complete your sign up</p>
   <br />
-  <button type="submit">VERIFY</button>
-</form>
+  <a href = "https://jaraaa.herokuapp.com/users/verify/${email}"><button type="submit">VERIFY</button></a>
   `;
 
   sendSignUpmail(email, message);
