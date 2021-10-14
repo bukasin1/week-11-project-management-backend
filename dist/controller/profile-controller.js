@@ -9,7 +9,11 @@ const userschema_1 = __importDefault(require("../models/userschema"));
 const cloudinary = require('cloudinary').v2;
 const showProfile = (req, res) => {
     const user = req.user;
-    res.render('profile', { user: user.firstname });
+    res.status(200).send({
+        status: "Successful",
+        user
+    });
+    // res.render('profile', { user: user.firstname });
 };
 exports.showProfile = showProfile;
 async function editProfile(req, res) {

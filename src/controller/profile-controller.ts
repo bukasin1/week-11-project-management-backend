@@ -9,7 +9,11 @@ import { userType } from '../config/passport-config';
 
 const showProfile = (req: Request, res: Response) => {
   const user = req.user as userType;
-  res.render('profile', { user: user.firstname });
+  res.status(200).send({
+    status: "Successful",
+    user
+  })
+  // res.render('profile', { user: user.firstname });
 };
 
 export { showProfile };

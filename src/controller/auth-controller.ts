@@ -8,7 +8,10 @@ import jwt from 'jsonwebtoken';
 const secretKey = process.env.TOKEN_KEY as string;
 
 const login = async (req: Request, res: Response) => {
-  res.render("login");
+  res.status(201).send({
+    message: "Please login"
+  })
+  // res.render("login");
 };
 
 export async function loginPage(req: Request, res: Response) {
