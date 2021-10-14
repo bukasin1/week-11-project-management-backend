@@ -21,7 +21,13 @@ const task_routes_1 = __importDefault(require("./routes/task-routes"));
 const teamsRoute_1 = __importDefault(require("./routes/teamsRoute"));
 const app = (0, express_1.default)();
 const cors_1 = __importDefault(require("cors"));
-app.use((0, cors_1.default)());
+const corsOptions = {
+    //To allow requests from client
+    origin: ['http://localhost:3000'],
+    credentials: true,
+    exposedHeaders: ['set-cookie'],
+};
+app.use((0, cors_1.default)(corsOptions));
 require('./config/passport-config');
 // view engine setup
 app.set('views', path_1.default.join(__dirname, '..', 'views'));
