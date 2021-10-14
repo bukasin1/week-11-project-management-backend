@@ -27,11 +27,9 @@ const signUpUser = async (req, res) => {
         password: hashedPassword,
     });
     const message = `
-  <form action="https://jaraaa.herokuapp.com/users/verify/${email}" method="post">
   <p>Thank you for signing up with Project App. Please click verify below to complete your sign up</p>
   <br />
-  <button type="submit">VERIFY</button>
-</form>
+  <a href = "https://jaraaa.herokuapp.com/users/verify/${email}"><button type="submit">VERIFY</button></a>
   `;
     (0, sendemail_1.sendSignUpmail)(email, message);
     res.status(201).send(savedUser);
