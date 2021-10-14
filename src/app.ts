@@ -19,7 +19,7 @@ import teamsRoute from './routes/teamsRoute';
 
 const app = express();
 
-const cors = require('cors')
+import cors from 'cors';
 
 app.use(cors())
 require('./config/passport-config');
