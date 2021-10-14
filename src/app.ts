@@ -6,6 +6,7 @@ import logger from 'morgan';
 import cookieSession from 'cookie-session';
 import passport from 'passport';
 import flash from 'express-flash';
+import cors from 'cors';
 
 // import authRouter from "./routes/auth";
 import authRouter from './routes/auth-routes';
@@ -40,6 +41,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '..', 'public')));
+const corsOptions = {
+  //To allow requests from client
+  origin: ['http://localhost:3000'],
+  credentials: true,
+  exposedHeaders: ['set-cookie'],
+};
+app.use(cors(corsOptions));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

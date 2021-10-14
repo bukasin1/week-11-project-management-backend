@@ -33,8 +33,8 @@ export async function loginPage(req: express.Request, res: express.Response) {
       res.redirect('/profile');
     }else{
       console.log('login error')
-      return res.status(400).send('Invalid Email or Password');
-      // res.redirect('/profile');
+      //return res.status(400).send('Invalid Email or Password');
+      res.redirect('/profile');
     }
 
   }catch(err){
