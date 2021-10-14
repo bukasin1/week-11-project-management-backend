@@ -11,6 +11,6 @@ router.get('/', function (_req: Request, res: Response) {
 });
 router.post('/signup', signUpUser);
 
-router.post('/verify/:id', verifyUser);
+router.get('/verify/:id', verifyUser);
 
 export default router;
