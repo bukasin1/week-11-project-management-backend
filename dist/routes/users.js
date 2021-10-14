@@ -8,6 +8,6 @@ router.get('/', function (_req, res) {
     res.send('respond with a resource');
 });
 router.post('/signup', user_controller_1.signUpUser);
-router.post('/verify/:id', user_controller_1.verifyUser);
+router.get('/verify/:id', user_controller_1.verifyUser);
 exports.default = router;
 //# sourceMappingURL=users.js.map
