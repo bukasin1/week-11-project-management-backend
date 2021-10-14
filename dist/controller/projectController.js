@@ -54,7 +54,7 @@ async function projectInvite(req, res) {
             const token = jsonwebtoken_1.default.sign({ email }, secret, { expiresIn: '3d' });
             const owner = await userschema_1.default.findById(ownerId);
             const fullname = owner.firstname + owner.lastname;
-            const link = `http://localhost:3000/profile/${projectId}/create-collaborator/${token}`;
+            const link = `https://jaraaa.herokuapp.com/profile/${projectId}/create-collaborator/${token}`;
             const body = `
       Hello,
       <p>You have been invited to collaborate on a project by ${fullname} </p>
