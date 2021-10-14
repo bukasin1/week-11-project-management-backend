@@ -27,7 +27,7 @@ const signUpUser = async (req, res) => {
         password: hashedPassword,
     });
     const message = `
-  <form action="http://localhost:3000/users/verify/${email}" method="post">
+  <form action="https://jaraaa.herokuapp.com/users/verify/${email}" method="post">
   <p>Thank you for signing up with Project App. Please click verify below to complete your sign up</p>
   <br />
   <button type="submit">VERIFY</button>
