@@ -9,12 +9,12 @@ import { loginPage } from '../controller/auth-controller';
 // router.post('/login', loginPage);
 router.post('/login', localAuth(), loginRedirect);
 router.get('/login', login);
-router.get('/google', googleHandler, loginRedirect);
+router.get('/google', googleHandler );
 router.get('/logout', logout);
 router.get('/google/redirect', redirectHandler, loginRedirect);
 
 router.get( "/facebook", getFacebookAuth() );
 
-router.get( "/facebook/callback", authFacebook() );
+router.get( "/facebook/callback", authFacebook(), loginRedirect );
 
 export default router;
