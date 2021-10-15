@@ -1,11 +1,11 @@
 import mongoose from 'mongoose';
 
 export interface userProject {
-  projectId?: string,
-  projectName?: string
+  projectId?: string;
+  projectName?: string;
 }
 
-export interface IUser extends mongoose.Document  {
+export interface IUser extends mongoose.Document {
   firstname?: string;
   lastname?: string;
   email?: string;
@@ -21,7 +21,7 @@ export interface IUser extends mongoose.Document  {
   resetpasswordtoken?: string;
   resetpasswordexpires?: string;
   facebookId?: string;
-  googleId?: string
+  googleId?: string;
 }
 
 const userSchema = new mongoose.Schema<IUser>(
