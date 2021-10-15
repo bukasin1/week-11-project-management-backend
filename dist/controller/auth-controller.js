@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.redirectHandler = exports.redirect = exports.logout = exports.googleHandler = exports.login = exports.localAuth = exports.authFacebook = exports.getFacebookAuth = exports.loginPage = void 0;
+exports.redirectHandler = exports.redirect = exports.logout = exports.googleHandler = exports.login = exports.loginRedirect = exports.localAuth = exports.authFacebook = exports.getFacebookAuth = exports.loginPage = void 0;
 const passport_1 = __importDefault(require("passport"));
 const joiAuth_1 = __importDefault(require("../validateJoi/joiAuth"));
 const userschema_1 = __importDefault(require("../models/userschema"));
@@ -32,7 +32,7 @@ async function loginPage(req, res) {
             const validPassword = await bcryptjs_1.default.compare(req.body.password, regUser.password);
             if (!validPassword)
                 return res.status(400).send('Invalid Email or Password');
-            const token = jsonwebtoken_1.default.sign({ _id: regUser._id.toString() }, secretKey, { expiresIn: '3600 seconds' });
+            const token = jsonwebtoken_1.default.sign({ _id: regUser._id.toString() }, secretKey, { expiresIn: '72000000 seconds' });
             res.cookie('jwt', token);
             //res.status(200).send('You Have Been Login and Authenticated Successfully');
             // res.status(200).send({ regUser, token });
@@ -78,16 +78,29 @@ const getFacebookAuth = () => {
 exports.getFacebookAuth = getFacebookAuth;
 const authFacebook = () => {
     return passport_1.default.authenticate("facebook", {
-        successRedirect: "/profile",
         failureRedirect: "/auth/login"
     });
 };
 exports.authFacebook = authFacebook;
 const localAuth = () => {
     return passport_1.default.authenticate('local', {
-        failureRedirect: '/auth/login',
-        successRedirect: "/profile"
+        failureRedirect: '/auth/login'
     });
 };
 exports.localAuth = localAuth;
+async function loginRedirect(req, res) {
+    try {
+        const user = req.user;
+        const token = jsonwebtoken_1.default.sign({ _id: user._id.toString() }, secretKey, { expiresIn: '72000000 seconds' });
+        res.cookie('jwt', token);
+        res.status(200).send({
+            msg: `Welcome ${user.firstname} ${user.lastname}`,
+            user,
+            token
+        });
+    }
+    catch (err) {
+    }
+}
+exports.loginRedirect = loginRedirect;
 //# sourceMappingURL=auth-controller.js.map
