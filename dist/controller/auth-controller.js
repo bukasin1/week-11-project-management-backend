@@ -11,8 +11,8 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const secretKey = process.env.TOKEN_KEY;
 const login = async (req, res) => {
-    res.status(201).send({
-        message: "Please login"
+    res.status(403).send({
+        message: "Please login again"
     });
     // res.render("login");
 };
