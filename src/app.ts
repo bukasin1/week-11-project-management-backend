@@ -16,7 +16,19 @@ import profileRouter from './routes/profile-routes';
 import tasksRouter from './routes/task-routes';
 import teamsRoute from './routes/teamsRoute';
 
+
 const app = express();
+
+import cors from 'cors';
+
+const corsOptions = {
+  //To allow requests from client
+  origin: ['http://localhost:3000'],
+  credentials: true,
+  exposedHeaders: ['set-cookie'],
+};
+app.use(cors(corsOptions));
+
 require('./config/passport-config');
 
 // view engine setup

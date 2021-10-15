@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 export interface ITask extends mongoose.Document {
+  [x: string]: any;
   title: string;
   projectID: string;
   assignedUser: string;
@@ -13,6 +14,10 @@ export interface ITask extends mongoose.Document {
 
 export interface file {
   fileUrl: string;
+  uploadedBy: {
+    userId: string,
+    userName: string
+  };
 }
 
 export interface iComment {
@@ -24,10 +29,6 @@ export interface iComment {
   };
   content: string;
   createdOn: number;
-  editedBy?: {
-    userId: string,
-    userName: string
-  };
   updatedOn?: number;
 }
 const taskSchema = new mongoose.Schema<ITask>(
@@ -55,6 +56,10 @@ const taskSchema = new mongoose.Schema<ITask>(
     files: [
       {
         fileUrl: String,
+        uploadedBy: {
+          userId: String,
+          userName: String
+        }
       },
     ],
     comments: [
@@ -70,10 +75,6 @@ const taskSchema = new mongoose.Schema<ITask>(
         createdOn: {
           type: Date,
           default: Date.now()
-        },
-        editedBy: {
-          userId: String,
-          userName: String
         },
         updatedOn: {
           type: Date
