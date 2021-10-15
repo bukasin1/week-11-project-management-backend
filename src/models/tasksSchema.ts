@@ -7,17 +7,29 @@ export interface ITask extends mongoose.Document {
   assignedUser: string;
   description: string;
   files: [file];
-  comments: [comment];
+  comments: [iComment];
   dueDate: Date;
   status: string;
 }
 
 export interface file {
   fileUrl: string;
+  uploadedBy: {
+    userId: string,
+    userName: string
+  };
 }
 
-export interface comment {
+export interface iComment {
+  _id?: string,
+  id?: string,
+  createdBy: {
+    userId: string,
+    userName: string
+  };
   content: string;
+  createdOn: number;
+  updatedOn?: number;
 }
 const taskSchema = new mongoose.Schema<ITask>(
   {
@@ -44,11 +56,29 @@ const taskSchema = new mongoose.Schema<ITask>(
     files: [
       {
         fileUrl: String,
+        uploadedBy: {
+          userId: String,
+          userName: String
+        }
       },
     ],
     comments: [
       {
-        content: String,
+        createdBy: {
+          userId: String,
+          userName: String
+        },
+        content: {
+          type: String,
+          required: true
+        },
+        createdOn: {
+          type: Date,
+          default: Date.now()
+        },
+        updatedOn: {
+          type: Date
+        }
       },
     ],
     dueDate: {

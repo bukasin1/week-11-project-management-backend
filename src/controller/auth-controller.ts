@@ -1,14 +1,17 @@
 import { Request, Response, NextFunction } from "express";
 import passport from "passport";
 import loginSchema from '../validateJoi/joiAuth';
-import User from '../models/userschema';
+import User, { IUser } from '../models/userschema';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 const secretKey = process.env.TOKEN_KEY as string;
 
 const login = async (req: Request, res: Response) => {
-  res.render("login");
+  res.status(403).json({
+    msg: "Please login again"
+  })
+  // res.render("login");
 };
 
 export async function loginPage(req: Request, res: Response) {
@@ -25,7 +28,7 @@ export async function loginPage(req: Request, res: Response) {
       const validPassword = await bcrypt.compare(req.body.password, regUser.password);
 
       if (!validPassword) return res.status(400).send('Invalid Email or Password');
-      const token = jwt.sign({ _id: regUser._id.toString() }, secretKey, { expiresIn: '3600 seconds' });
+      const token = jwt.sign({ _id: regUser._id.toString() }, secretKey, { expiresIn: '72000000 seconds' });
       res.cookie('jwt', token);
       //res.status(200).send('You Have Been Login and Authenticated Successfully');
       // res.status(200).send({ regUser, token });
@@ -71,16 +74,29 @@ export const getFacebookAuth = () => {
 
 export const authFacebook = () => {
   return passport.authenticate("facebook", {
-    successRedirect: "/profile",
     failureRedirect: "/auth/login"
   })
 }
 
 export const localAuth = () => {
   return  passport.authenticate('local', {
-    failureRedirect: '/auth/login',
-    successRedirect: "/profile"
+    failureRedirect: '/auth/login'
   })
+}
+
+export async function loginRedirect(req: Request, res: Response){
+  try{
+    const user = req.user as IUser
+    const token = jwt.sign({ _id: user._id.toString() }, secretKey, { expiresIn: '72000000 seconds' });
+    res.cookie('jwt', token);
+    res.status(200).send({
+      msg: `Welcome ${user.firstname} ${user.lastname}`,
+      user,
+      token
+    })
+  }catch(err){
+
+  }
 }
 
 export { login, googleHandler, logout, redirect, redirectHandler };
