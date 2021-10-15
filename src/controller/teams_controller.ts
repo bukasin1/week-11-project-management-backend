@@ -4,13 +4,10 @@
 import { Request, Response } from 'express';
 import Team, { ITeam, teamMember } from '../models/teamsSchema';
 import Project from '../models/projectSchema';
+import Task, { ITask } from '../models/tasksSchema';
 import Joi from 'joi';
 import User, { IUser } from '../models/userschema';
 import express from 'express';
-
-
-
-
 
 export async function createTeam(req: Request, res: Response) {
   const { projectID } = req.params;
@@ -109,24 +106,23 @@ export async function getAllTeamMembers(req: Request, res: Response) {
   }
 }
 
-
 //update members
 export async function updateMembers(req: express.Request, res: express.Response) {
-  const team = await Team.findById(req.params.teamID)
+  const team = await Team.findById(req.params.teamID);
 
-  if(req.body.members){
-      const members = req.body.members
-      const addMembers = members.map((mem: string) => {
-          return {userId: mem}
-      })
-      team.members.push(...addMembers)
+  if (req.body.members) {
+    const members = req.body.members;
+    const addMembers = members.map((mem: string) => {
+      return { userId: mem };
+    });
+    team.members.push(...addMembers);
   }
 
-  team.teamName = req.body.teamName || team.teamName
-  await team.save()
+  team.teamName = req.body.teamName || team.teamName;
+  await team.save();
   return res.status(201).json({
     message: `Successful`,
-    updatedteam: team
+    updatedteam: team,
   });
 }
 ////leave a team//////////
@@ -134,16 +130,16 @@ export async function leaveTeam(req: Request, res: Response) {
   const { teamID } = req.params;
   const loggedInUser = req.user as IUser;
   console.log(loggedInUser, loggedInUser._id, 'user');
-  const team = await Team.findOne({ _id: teamID }) as ITeam;
+  const team = (await Team.findOne({ _id: teamID })) as ITeam;
   if (team) {
     const { members, teamName } = team;
-    const user = members.filter(val => val.userId === loggedInUser._id);
+    const user = members.filter((val) => val.userId === loggedInUser._id);
     if (user.length == 0) {
       return res.status(400).json({
         message: `Sorry, you are not a member of team ${teamName}`,
       });
     }
-    const updatedMembers = members.filter(val => {
+    const updatedMembers = members.filter((val) => {
       return val.userId !== loggedInUser._id;
     });
     const updatedteam = await Team.findByIdAndUpdate({ _id: teamID }, { members: updatedMembers }, { new: true });
@@ -159,40 +155,62 @@ export async function leaveTeam(req: Request, res: Response) {
   }
 }
 
+export async function getUserDetails(req: Request, res: Response) {
+  const { teamID } = req.params;
+  const existingTeam = (await Team.findOne({ _id: teamID })) as ITeam;
+  try {
+    if (!existingTeam) {
+      res.status(404).json({
+        message: "Team doesn't exist",
+      });
+    }
 
-export async function getUserDetails(req: Request, res: Response){
-const { teamID } = req.params;
- const existingTeam = await Team.findOne({_id: teamID}) as ITeam
- try {
- if(!existingTeam){
-   res.status(404).json({
-     message: "Team doesn't exist"
-   })
- }
+    const members = existingTeam.members;
+    const promiseOfMembers = members.map(async (member: teamMember) => {
+      const userInfo = await User.findById(member.userId);
+      const { firstname, lastname, role, location } = userInfo;
 
- const members = existingTeam.members
- const teamMembers = members.map(async(member:teamMember) => {
-  const  userInfo  = await User.findOne({ _id: member.userId})
-  const { firstname, lastname, role, location } = userInfo
+      const closedTask = await Task.find({ assignedUser: member.userId, status: 'done' });
+      const todoTask = await Task.find({ assignedUser: member.userId, status: 'todo' });
+      const backLog = await Task.find({ assignedUser: member.userId, status: 'backlog' });
+      const openedTasks = [...todoTask, ...backLog];
+      const closedTasks = [...closedTask];
 
-  return {
-    firstname: firstname,
-    lastname: lastname,
-    role: role,
-    location: location,
+      return {
+        firstname: firstname,
+        lastname: lastname,
+        role: role || '',
+        location: location || '',
+        closedTasks: closedTasks.length,
+        openedTasks: openedTasks.length,
+      };
+    });
+
+    const teamMembers = await Promise.all(promiseOfMembers);
+
+    res.status(200).json({
+      data: teamMembers,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: 'failed',
+      error: 'error',
+    });
   }
-
- })
-
-  res.status(400).json({
-    data: teamMembers
-  })
-
-}catch (err){
-  res.status(500).json({
-    message: 'failed',
-    error: 'error'
-  })
-}
 }
 
+export async function getFileUploads(req: Request, res: Response): Promise<void> {
+  try {
+    const tasks = (await Task.find({})) as ITask[];
+    const filesArray = tasks.map((task) => {
+      return task.files;
+    });
+
+    const files = filesArray.flat();
+
+    res.status(200).json({
+      data: files,
+    });
+  } catch (err) {}
+}
