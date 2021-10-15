@@ -169,7 +169,7 @@ exports.deleteTask = deleteTask;
 //    res.send('value deleted succesfully')
 // }
 async function createComment(req, res) {
-    var _a;
+    var _a, _b;
     try {
         const loggedInUser = req.user;
         const taskId = req.params.taskID;
@@ -177,7 +177,8 @@ async function createComment(req, res) {
         const projectId = task.projectID;
         const project = await projectSchema_2.default.findById(projectId);
         const isCollaborator = (_a = project.collaborators) === null || _a === void 0 ? void 0 : _a.find(user => user.userId === loggedInUser._id);
-        const isOwner = project.owner === loggedInUser._id;
+        const isOwner = ((_b = project.owner) === null || _b === void 0 ? void 0 : _b.toString()) === loggedInUser._id.toString();
+        console.log(isOwner, "owner check");
         if (isCollaborator || isOwner) {
             const { comment } = req.body;
             const newComment = makeComment(loggedInUser, req.body.comment);
