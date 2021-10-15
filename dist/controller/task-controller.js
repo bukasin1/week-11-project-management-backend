@@ -176,9 +176,8 @@ async function createComment(req, res) {
         const task = await tasksSchema_2.default.findById(taskId);
         const projectId = task.projectID;
         const project = await projectSchema_2.default.findById(projectId);
-        const isCollaborator = (_a = project.collaborators) === null || _a === void 0 ? void 0 : _a.find(user => user.userId === loggedInUser._id);
+        const isCollaborator = (_a = project.collaborators) === null || _a === void 0 ? void 0 : _a.find(user => user.userId === loggedInUser.id);
         const isOwner = ((_b = project.owner) === null || _b === void 0 ? void 0 : _b.toString()) === loggedInUser._id.toString();
-        console.log(isOwner, "owner check");
         if (isCollaborator || isOwner) {
             const { comment } = req.body;
             const newComment = makeComment(loggedInUser, req.body.comment);
