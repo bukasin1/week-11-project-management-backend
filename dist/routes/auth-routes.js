@@ -7,10 +7,10 @@ const router = (0, express_1.Router)();
 // router.post('/login', loginPage);
 router.post('/login', (0, auth_controller_1.localAuth)(), auth_controller_1.loginRedirect);
 router.get('/login', auth_controller_1.login);
-router.get('/google', auth_controller_1.googleHandler, auth_controller_1.loginRedirect);
+router.get('/google', auth_controller_1.googleHandler);
 router.get('/logout', auth_controller_1.logout);
 router.get('/google/redirect', auth_controller_1.redirectHandler, auth_controller_1.loginRedirect);
 router.get("/facebook", (0, auth_controller_1.getFacebookAuth)());
-router.get("/facebook/callback", (0, auth_controller_1.authFacebook)());
+router.get("/facebook/callback", (0, auth_controller_1.authFacebook)(), auth_controller_1.loginRedirect);
 exports.default = router;
 //# sourceMappingURL=auth-routes.js.map
