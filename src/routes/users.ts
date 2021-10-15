@@ -1,8 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { signUpUser, verifyUser } from '../controller/user.controller';
-import authenticateJWT from '../authentication/auth';
+import { getActivities, getYesterdayActivities } from '../controller/activities-controllers';
 import { isLoggedIn } from '../middleware/auth-check';
-import { projectAuth } from '../middleware/projectAuth';
 const router = Router();
 
 /* GET users listing. */
@@ -12,5 +11,8 @@ router.get('/', function (_req: Request, res: Response) {
 router.post('/signup', signUpUser);
 
 router.get('/verify/:id', verifyUser);
+
+router.get('/activities', isLoggedIn, getActivities);
+router.get('/previous/activities', isLoggedIn, getYesterdayActivities);
 
 export default router;

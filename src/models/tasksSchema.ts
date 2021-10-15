@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
 export interface ITask extends mongoose.Document {
+  [x: string]: any;
   title: string;
   projectID: string;
   assignedUser: string;
