@@ -169,7 +169,8 @@ export async function createComment(req: Request, res: Response){
     const projectId = task.projectID
     const project = await Project.findById(projectId) as IProject
     const isCollaborator = project.collaborators?.find(user => user.userId === loggedInUser._id)
-    const isOwner = project.owner === loggedInUser._id
+    const isOwner = project.owner?.toString() === loggedInUser._id.toString()
+    console.log(isOwner, "owner check")
     if(isCollaborator || isOwner){
       const {comment} = req.body
       const newComment = makeComment(loggedInUser, req.body.comment)
