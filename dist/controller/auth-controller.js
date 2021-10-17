@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.redirectHandler = exports.redirect = exports.logout = exports.googleHandler = exports.login = exports.loginRedirect = exports.localAuth = exports.authFacebook = exports.getFacebookAuth = exports.loginPage = void 0;
+exports.redirectHandler = exports.redirect = exports.logout = exports.googleHandler = exports.login = exports.ssoRedirect = exports.loginRedirect = exports.localAuth = exports.authFacebook = exports.getFacebookAuth = exports.loginPage = void 0;
 const passport_1 = __importDefault(require("passport"));
 const joiAuth_1 = __importDefault(require("../validateJoi/joiAuth"));
 const userschema_1 = __importDefault(require("../models/userschema"));
@@ -64,7 +64,7 @@ const logout = async (req, res) => {
     res.redirect('/');
 };
 exports.logout = logout;
-const redirectHandler = passport_1.default.authenticate('google', { failureRedirect: "/auth/login" });
+const redirectHandler = passport_1.default.authenticate('google', { failureRedirect: `http://localhost:3000/login` });
 exports.redirectHandler = redirectHandler;
 //redirect after authentication
 const redirect = async (req, res) => {
@@ -78,7 +78,7 @@ const getFacebookAuth = () => {
 exports.getFacebookAuth = getFacebookAuth;
 const authFacebook = () => {
     return passport_1.default.authenticate("facebook", {
-        failureRedirect: "/auth/login"
+        failureRedirect: `http://localhost:3000/login`
     });
 };
 exports.authFacebook = authFacebook;
@@ -103,4 +103,14 @@ async function loginRedirect(req, res) {
     }
 }
 exports.loginRedirect = loginRedirect;
+async function ssoRedirect(req, res) {
+    try {
+        const user = req.user;
+        const token = jsonwebtoken_1.default.sign({ _id: user._id.toString() }, secretKey, { expiresIn: '72000000 seconds' });
+        res.redirect(`http://localhost:3000/success/${token}~${JSON.stringify(user)}`);
+    }
+    catch (err) {
+    }
+}
+exports.ssoRedirect = ssoRedirect;
 //# sourceMappingURL=auth-controller.js.map
