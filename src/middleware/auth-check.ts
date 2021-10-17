@@ -13,8 +13,8 @@ export const authCheck = (req: Request, res: Response, next: NextFunction) => {
 const secretKey = process.env.TOKEN_KEY as string;
 
 export async function isLoggedIn(req: Request, res: Response, next: NextFunction): Promise<void> {
-  if (req.cookies.jwt) {
-    const token: string = req.cookies.jwt;
+  if (req.headers.authorization) {
+    const token: string = req.headers.authorization;
     if (!token) res.status(401).send('Access denied. No token provided.');
 
     try {
@@ -23,7 +23,8 @@ export async function isLoggedIn(req: Request, res: Response, next: NextFunction
       req.user = user;
       next();
     } catch (ex) {
-      res.status(400).send({ error: 'please you have to be Authenticated' });
+      // res.status(400).send({ error: 'please you have to be Authenticated' });
+      res.redirect('/auth/login');
     }
     return;
   }
