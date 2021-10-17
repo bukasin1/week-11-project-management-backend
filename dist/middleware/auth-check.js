@@ -17,8 +17,8 @@ const authCheck = (req, res, next) => {
 exports.authCheck = authCheck;
 const secretKey = process.env.TOKEN_KEY;
 async function isLoggedIn(req, res, next) {
-    if (req.cookies.jwt) {
-        const token = req.cookies.jwt;
+    if (req.headers.authorization) {
+        const token = req.headers.authorization;
         if (!token)
             res.status(401).send('Access denied. No token provided.');
         try {
@@ -28,7 +28,8 @@ async function isLoggedIn(req, res, next) {
             next();
         }
         catch (ex) {
-            res.status(400).send({ error: 'please you have to be Authenticated' });
+            // res.status(400).send({ error: 'please you have to be Authenticated' });
+            res.redirect('/auth/login');
         }
         return;
     }
