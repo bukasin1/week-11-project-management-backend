@@ -60,7 +60,7 @@ const logout = async (req: Request, res: Response) => {
   res.redirect('/');
 };
 
-const redirectHandler = passport.authenticate('google', { failureRedirect: `http://localhost:3000/login` });
+const redirectHandler = passport.authenticate('google', { failureRedirect: `${process.env.REACTURL}/login` });
 
 //redirect after authentication
 const redirect = async (req: Request, res: Response) => {
@@ -74,7 +74,7 @@ export const getFacebookAuth = () => {
 
 export const authFacebook = () => {
   return passport.authenticate("facebook", {
-    failureRedirect: `http://localhost:3000/login`
+    failureRedirect: `${process.env.REACTURL}/login`
   })
 }
 
@@ -103,7 +103,7 @@ export async function ssoRedirect(req: Request, res: Response) {
   try {
     const user = req.user as IUser
     const token = jwt.sign({ _id: user._id.toString() }, secretKey, { expiresIn: '72000000 seconds' });
-    res.redirect(`http://localhost:3000/success/${token}~${JSON.stringify(user)}`)
+    res.redirect(`${process.env.REACTURL}/success/${token}~${JSON.stringify(user)}`)
   } catch (err) {
 
   }
