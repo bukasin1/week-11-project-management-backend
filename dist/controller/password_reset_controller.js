@@ -47,7 +47,7 @@ async function forgetPassword(req, res) {
         if (user) {
             let secret = process.env.SECRET_KEY_AUTH;
             const token = jsonwebtoken_1.default.sign({ id: user._id }, secret, { expiresIn: '30mins' });
-            const link = `${process.env.REACTURL}/password/verifyresetpassword/${token}`;
+            const link = `${process.env.APIURL}/password/verifyresetpassword/${token}`;
             const body = `
       Dear ${user.firstname},
       <p>Follow this <a href=${link}> link </a> to change your password. The link would expire in 30 mins.</P>
@@ -76,10 +76,8 @@ exports.forgetPassword = forgetPassword;
 async function verifyResetPassword(req, res) {
     //get
     let { token } = req.params;
-    console.log(token, 'token-verify');
     let secret = process.env.SECRET_KEY_AUTH;
     const verification = (await jsonwebtoken_1.default.verify(token, secret)); ///verification
-    console.log(verification, 'verification');
     const id = verification.id;
     const isValidId = userschema_1.default.findOne({ _id: id });
     try {
@@ -88,12 +86,16 @@ async function verifyResetPassword(req, res) {
             // token = jwt.sign({ id: id }, secret, { expiresIn: '1d' });
             // res.render('password-rest', { title: 'password-rest', token: token });
             res.redirect(`${process.env.REACTURL}/password/resetpassword/${token}`);
+            return;
         }
+        res.redirect(`${process.env.REACTURL}/forgotpassword/${token}`);
     }
     catch (err) {
-        res.json({
-            message: err,
-        });
+        console.log(err);
+        // res.json({
+        //   message: err,
+        // });
+        res.redirect(`${process.env.REACTURL}/forgotpassword/${token}`);
     }
 }
 exports.verifyResetPassword = verifyResetPassword;
@@ -103,14 +105,11 @@ async function resetPassword(req, res) {
     try {
         // res.json(req.params)
         let secret = process.env.SECRET_KEY_AUTH;
-        console.log('secret', secret);
         const verification = (await jsonwebtoken_1.default.verify(token, secret));
         const id = verification.id;
         if (verification) {
             const user = await userschema_1.default.findOne({ _id: id });
-            console.log('user', user);
             if (user) {
-                console.log('omotosho req.body', req.body);
                 let { newPassword, repeatPassword } = req.body;
                 if (newPassword === repeatPassword) {
                     newPassword = await bcrypt_1.default.hash(newPassword, 10);
