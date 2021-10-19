@@ -47,7 +47,7 @@ async function forgetPassword(req, res) {
         if (user) {
             let secret = process.env.SECRET_KEY_AUTH;
             const token = jsonwebtoken_1.default.sign({ id: user._id }, secret, { expiresIn: '30mins' });
-            const link = `${process.env.REACTURL}/password/verifyresetpassword/${token}`;
+            const link = `${process.env.APIURL}/password/verifyresetpassword/${token}`;
             const body = `
       Dear ${user.firstname},
       <p>Follow this <a href=${link}> link </a> to change your password. The link would expire in 30 mins.</P>
@@ -88,12 +88,16 @@ async function verifyResetPassword(req, res) {
             // token = jwt.sign({ id: id }, secret, { expiresIn: '1d' });
             // res.render('password-rest', { title: 'password-rest', token: token });
             res.redirect(`${process.env.REACTURL}/password/resetpassword/${token}`);
+            return;
         }
+        res.redirect(`${process.env.REACTURL}/forgotpassword/${token}`);
     }
     catch (err) {
-        res.json({
-            message: err,
-        });
+        console.log(err);
+        // res.json({
+        //   message: err,
+        // });
+        res.redirect(`${process.env.REACTURL}/forgotpassword/${token}`);
     }
 }
 exports.verifyResetPassword = verifyResetPassword;
