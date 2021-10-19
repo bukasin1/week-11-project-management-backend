@@ -16,7 +16,7 @@ export async function changePassword(req: any, res: Response) {
     if (validPassword) {
       if (newPassword === repeatPassword) {
         const newPasswordUpdate = await bcrypt.hash(newPassword, 10);
-        const newUserInfo = await User.findOneAndUpdate({ email: email }, { password: newPassword }, { new: true });
+        const newUserInfo = await User.findOneAndUpdate({ email: email }, { password: newPasswordUpdate }, { new: true });
         return res.status(200).json({
           newUserInfo,
         });
