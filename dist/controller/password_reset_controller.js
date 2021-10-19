@@ -19,7 +19,7 @@ async function changePassword(req, res) {
         if (validPassword) {
             if (newPassword === repeatPassword) {
                 const newPasswordUpdate = await bcrypt_1.default.hash(newPassword, 10);
-                const newUserInfo = await userschema_1.default.findOneAndUpdate({ email: email }, { password: newPassword }, { new: true });
+                const newUserInfo = await userschema_1.default.findOneAndUpdate({ email: email }, { password: newPasswordUpdate }, { new: true });
                 return res.status(200).json({
                     newUserInfo,
                 });
