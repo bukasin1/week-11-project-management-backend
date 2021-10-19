@@ -28,10 +28,14 @@ const taskSchema = new mongoose_1.default.Schema({
     files: [
         {
             fileUrl: String,
+            fileName: String,
             uploadedBy: {
                 userId: String,
-                userName: String
-            }
+                userName: String,
+                userAvatar: String
+            },
+            fileSize: String,
+            uploadedOn: Date
         },
     ],
     comments: [

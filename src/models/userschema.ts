@@ -17,7 +17,7 @@ export interface IUser extends mongoose.Document {
   teams?: string[];
   about?: string;
   isVerified?: boolean;
-  avater?: string;
+  avatar?: string;
   resetpasswordtoken?: string;
   resetpasswordexpires?: string;
   facebookId?: string;

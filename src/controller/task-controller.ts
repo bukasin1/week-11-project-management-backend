@@ -52,14 +52,20 @@ export const createTask = async (req: Request, res: Response) => {
         task.comments.push(newComment)
       }
       if (req.file) {
+        let fileSize
+        if(req.file.size < 1000) fileSize = req.file.size + 'B'
+        if(req.file.size >= 1000 && req.file.size < 1000000) fileSize = Math.round(req.file.size/1000) + 'KB'
+        if(req.file.size >= 1000000 && req.file.size < 1000000000) fileSize = Math.round(req.file.size/1000000) + 'MB'
         const { url } = await cloudinary.uploader.upload(req.file?.path);
         img_Url = url;
         const newFile = {
           fileUrl: img_Url,
+          fileName: req.file.originalname as string,
           uploadedBy: {
-            userId: loggedInUser._id,
-            userName: loggedInUser.firstname as string + ' ' + loggedInUser.lastname as string
+            userId: loggedInUser._id
           },
+          fileSize: fileSize as string,
+          uploadedOn: Date.now()
         }
         task.files.push(newFile)
       }
@@ -84,15 +90,20 @@ export async function updateTask(req: Request, res: Response){
         task.comments.push(newComment)
       }
       if(req.file){
-        console.log(req.file)
+        let fileSize
+        if(req.file.size < 1000) fileSize = req.file.size + 'B'
+        if(req.file.size >= 1000 && req.file.size < 1000000) fileSize = Math.round(req.file.size/1000) + 'KB'
+        if(req.file.size >= 1000000 && req.file.size < 1000000000) fileSize = Math.round(req.file.size/1000000) + 'MB'
         const { url } = await cloudinary.uploader.upload(req.file?.path);
         const img_Url = url
         const newFile = {
           fileUrl: img_Url,
+          fileName: req.file.originalname as string,
           uploadedBy: {
-            userId: loggedInUser._id,
-            userName: loggedInUser.firstname as string + ' ' + loggedInUser.lastname as string
+            userId: loggedInUser._id
           },
+          fileSize: fileSize as string,
+          uploadedOn: Date.now()
         }
         task.files.push(newFile)
       }
@@ -103,7 +114,7 @@ export async function updateTask(req: Request, res: Response){
       task.dueDate = dueDate || task.dueDate
       task.status = status || task.status
       await task.save()
-      return res.status(404).send({
+      return res.status(201).send({
         message: `Task with id ${task._id} updated`
       })
     }

@@ -205,8 +205,22 @@ async function getFileUploads(req, res) {
             return task.files;
         });
         const files = filesArray.flat();
+        const refined = files.map(async (file) => {
+            const user = await userschema_1.default.findById(file.uploadedBy.userId);
+            const { uploadedBy, fileName, fileSize, fileUrl, uploadedOn, _id } = file;
+            const obj = {
+                ...{ uploadedBy, fileName, fileSize, fileUrl, uploadedOn, _id },
+                uploadedBy: {
+                    userAvatar: user.avatar,
+                    userName: user.firstname + ' ' + user.lastname
+                }
+            };
+            return obj;
+        });
+        console.log(refined, 'promises');
+        console.log(await Promise.all(refined), 'result');
         res.status(200).json({
-            data: files,
+            data: await Promise.all(refined),
         });
     }
     catch (err) { }
