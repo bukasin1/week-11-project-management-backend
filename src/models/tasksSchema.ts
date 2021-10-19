@@ -13,11 +13,16 @@ export interface ITask extends mongoose.Document {
 }
 
 export interface file {
+  _id?: string,
   fileUrl: string;
+  fileName: string;
   uploadedBy: {
     userId: string,
-    userName: string
+    userName?: string,
+    userAvatar?: string
   };
+  fileSize: string,
+  uploadedOn: number
 }
 
 export interface iComment {
@@ -56,10 +61,14 @@ const taskSchema = new mongoose.Schema<ITask>(
     files: [
       {
         fileUrl: String,
+        fileName: String,
         uploadedBy: {
           userId: String,
-          userName: String
-        }
+          userName: String,
+          userAvatar: String
+        },
+        fileSize: String,
+        uploadedOn: Date
       },
     ],
     comments: [
