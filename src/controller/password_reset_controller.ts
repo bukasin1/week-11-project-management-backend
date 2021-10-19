@@ -42,7 +42,7 @@ export async function forgetPassword(req: Request, res: Response) {
     if (user) {
       let secret = process.env.SECRET_KEY_AUTH as string;
       const token = jwt.sign({ id: user._id }, secret, { expiresIn: '30mins' });
-      const link = `http://localhost:3002/password/verifyresetpassword/${token}`;
+      const link = `${process.env.REACTURL}/password/verifyresetpassword/${token}`;
       const body = `
       Dear ${user.firstname},
       <p>Follow this <a href=${link}> link </a> to change your password. The link would expire in 30 mins.</P>
