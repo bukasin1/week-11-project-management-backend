@@ -208,9 +208,23 @@ export async function getFileUploads(req: Request, res: Response): Promise<void>
     });
 
     const files = filesArray.flat();
+    const refined = files.map(async(file) => {
+      const user = await User.findById(file.uploadedBy.userId) as IUser
+      const {uploadedBy, fileName, fileSize, fileUrl, uploadedOn, _id} = file
+      const obj = {
+        ...{uploadedBy, fileName, fileSize, fileUrl, uploadedOn, _id},
+        uploadedBy:{
+          userAvatar: user.avatar,
+          userName: user.firstname + ' ' + user.lastname
+        }
+      }
+      return obj
+    })
+    console.log(refined, 'promises')
+    console.log(await Promise.all(refined), 'result')
 
     res.status(200).json({
-      data: files,
+      data: await Promise.all(refined),
     });
   } catch (err) {}
 }
