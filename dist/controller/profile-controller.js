@@ -41,7 +41,7 @@ async function editProfile(req, res) {
         location: req.body.location || user.location,
         teams: req.body.teams || user.teams,
         about: req.body.about || user.about,
-        avatar: img_Url || user.avater
+        avatar: img_Url || user.avatar
     }, (err) => {
         if (err) {
             res.status(404).json({
