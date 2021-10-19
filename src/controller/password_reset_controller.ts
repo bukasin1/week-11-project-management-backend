@@ -79,7 +79,7 @@ export async function verifyResetPassword(req: Request, res: Response) {
       //line missing?
       // token = jwt.sign({ id: id }, secret, { expiresIn: '1d' });
       // res.render('password-rest', { title: 'password-rest', token: token });
-      res.redirect(`${process.env.ReactPort}/password/resetpassword/${token}`);
+      res.redirect(`${process.env.REACTURL}/password/resetpassword/${token}`);
     }
   } catch (err) {
     res.json({
