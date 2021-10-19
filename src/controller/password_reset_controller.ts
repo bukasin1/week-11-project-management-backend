@@ -42,7 +42,7 @@ export async function forgetPassword(req: Request, res: Response) {
     if (user) {
       let secret = process.env.SECRET_KEY_AUTH as string;
       const token = jwt.sign({ id: user._id }, secret, { expiresIn: '30mins' });
-      const link = `http://localhost:3000/password/verifyresetpassword/${token}`;
+      const link = `http://localhost:3002/password/verifyresetpassword/${token}`;
       const body = `
       Dear ${user.firstname},
       <p>Follow this <a href=${link}> link </a> to change your password. The link would expire in 30 mins.</P>
@@ -78,7 +78,8 @@ export async function verifyResetPassword(req: Request, res: Response) {
     if (isValidId) {
       //line missing?
       // token = jwt.sign({ id: id }, secret, { expiresIn: '1d' });
-      res.render('password-rest', { title: 'password-rest', token: token });
+      // res.render('password-rest', { title: 'password-rest', token: token });
+      res.redirect(`${process.env.ReactPort}/password/resetpassword/${token}`);
     }
   } catch (err) {
     res.json({
@@ -100,11 +101,12 @@ export async function resetPassword(req: Request, res: Response) {
       const user = await User.findOne({ _id: id });
       console.log('user', user);
       if (user) {
+        console.log('omotosho req.body', req.body);
         let { newPassword, repeatPassword } = req.body;
         if (newPassword === repeatPassword) {
           newPassword = await bcrypt.hash(newPassword, 10);
           const updatedUser = await User.findOneAndUpdate({ _id: id }, { password: newPassword }, { new: true });
-          res.status(400).json({
+          res.status(200).json({
             updatedUser: updatedUser,
           });
           return;
