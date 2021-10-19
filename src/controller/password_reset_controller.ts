@@ -68,10 +68,8 @@ export async function forgetPassword(req: Request, res: Response) {
 export async function verifyResetPassword(req: Request, res: Response) {
   //get
   let { token } = req.params;
-  console.log(token, 'token-verify');
   let secret = process.env.SECRET_KEY_AUTH as string;
   const verification = (await jwt.verify(token, secret)) as JwtPayload; ///verification
-  console.log(verification, 'verification');
   const id = verification.id;
   const isValidId = User.findOne({ _id: id });
   try {
@@ -98,14 +96,11 @@ export async function resetPassword(req: Request, res: Response) {
   try {
     // res.json(req.params)
     let secret = process.env.SECRET_KEY_AUTH as string;
-    console.log('secret', secret);
     const verification = (await jwt.verify(token, secret)) as JwtPayload;
     const id = verification.id;
     if (verification) {
       const user = await User.findOne({ _id: id });
-      console.log('user', user);
       if (user) {
-        console.log('omotosho req.body', req.body);
         let { newPassword, repeatPassword } = req.body;
         if (newPassword === repeatPassword) {
           newPassword = await bcrypt.hash(newPassword, 10);

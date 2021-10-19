@@ -76,10 +76,8 @@ exports.forgetPassword = forgetPassword;
 async function verifyResetPassword(req, res) {
     //get
     let { token } = req.params;
-    console.log(token, 'token-verify');
     let secret = process.env.SECRET_KEY_AUTH;
     const verification = (await jsonwebtoken_1.default.verify(token, secret)); ///verification
-    console.log(verification, 'verification');
     const id = verification.id;
     const isValidId = userschema_1.default.findOne({ _id: id });
     try {
@@ -107,14 +105,11 @@ async function resetPassword(req, res) {
     try {
         // res.json(req.params)
         let secret = process.env.SECRET_KEY_AUTH;
-        console.log('secret', secret);
         const verification = (await jsonwebtoken_1.default.verify(token, secret));
         const id = verification.id;
         if (verification) {
             const user = await userschema_1.default.findOne({ _id: id });
-            console.log('user', user);
             if (user) {
-                console.log('omotosho req.body', req.body);
                 let { newPassword, repeatPassword } = req.body;
                 if (newPassword === repeatPassword) {
                     newPassword = await bcrypt_1.default.hash(newPassword, 10);
