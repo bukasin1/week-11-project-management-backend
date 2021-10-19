@@ -168,7 +168,7 @@ export async function getUserDetails(req: Request, res: Response) {
     const members = existingTeam.members;
     const promiseOfMembers = members.map(async (member: teamMember) => {
       const userInfo = await User.findById(member.userId);
-      const { firstname, lastname, role, location } = userInfo;
+      const { firstname, lastname, role, location, avatar } = userInfo;
 
       const closedTask = await Task.find({ assignedUser: member.userId, status: 'done' });
       const todoTask = await Task.find({ assignedUser: member.userId, status: 'todo' });
@@ -177,12 +177,13 @@ export async function getUserDetails(req: Request, res: Response) {
       const closedTasks = [...closedTask];
 
       return {
+        avatar,
         firstname: firstname,
         lastname: lastname,
         role: role || '',
         location: location || '',
-        closedTasks: closedTasks.length,
-        openedTasks: openedTasks.length,
+        closedTasks: closedTasks,
+        openedTasks: openedTasks,
       };
     });
 
