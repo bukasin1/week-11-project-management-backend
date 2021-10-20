@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFileUploads = exports.getUserDetails = exports.leaveTeam = exports.updateMembers = exports.getAllTeamMembers = exports.addMemberToTeam = exports.createTeam = void 0;
+exports.getFileUploads = exports.getUserDetails = exports.leaveTeam = exports.updateMembers = exports.getAllTeamMembers = exports.addMemberToTeam = exports.getTeams = exports.createTeam = void 0;
 const teamsSchema_1 = __importDefault(require("../models/teamsSchema"));
 const projectSchema_1 = __importDefault(require("../models/projectSchema"));
 const tasksSchema_1 = __importDefault(require("../models/tasksSchema"));
@@ -55,6 +55,23 @@ async function createTeam(req, res) {
     }
 }
 exports.createTeam = createTeam;
+async function getTeams(req, res) {
+    try {
+        const teams = await teamsSchema_1.default.find({ projectID: req.params.projectID });
+        res.status(200).send({
+            message: 'Successful',
+            teams
+        });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).send({
+            error: 'Server error',
+            err
+        });
+    }
+}
+exports.getTeams = getTeams;
 async function addMemberToTeam(req, res) {
     const ownerId = req.user;
     const { memberId } = req.body; ///add team members email

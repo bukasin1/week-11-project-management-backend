@@ -54,6 +54,22 @@ export async function createTeam(req: Request, res: Response) {
   }
 }
 
+export async function getTeams(req: Request, res: Response) {
+  try{
+    const teams = await Team.find({projectID: req.params.projectID})
+    res.status(200).send({
+      message: 'Successful',
+      teams
+    })
+  }catch(err){
+    console.log(err)
+    res.status(500).send({
+      error: 'Server error',
+      err
+    })
+  }
+}
+
 export async function addMemberToTeam(req: Request, res: Response) {
   const ownerId = req.user as IUser;
   const { memberId } = req.body; ///add team members email
