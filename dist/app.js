@@ -23,7 +23,7 @@ const app = (0, express_1.default)();
 const cors_1 = __importDefault(require("cors"));
 const corsOptions = {
     //To allow requests from client
-    origin: ['http://localhost:3000'],
+    origin: [`${process.env.REACTURL}`],
     credentials: true,
     exposedHeaders: ['set-cookie'],
 };
