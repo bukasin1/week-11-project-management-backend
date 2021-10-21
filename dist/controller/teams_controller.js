@@ -218,7 +218,8 @@ async function getUserDetails(req, res) {
 exports.getUserDetails = getUserDetails;
 async function getFileUploads(req, res) {
     try {
-        const tasks = (await tasksSchema_1.default.find({}));
+        const projectID = req.params.projectID;
+        const tasks = (await tasksSchema_1.default.find({ projectID }));
         const filesArray = tasks.map((task) => {
             return task.files;
         });
