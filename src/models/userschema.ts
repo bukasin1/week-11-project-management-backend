@@ -6,6 +6,8 @@ export interface userProject {
 }
 
 export interface IUser extends mongoose.Document {
+  id: string;
+  _id: string;
   firstname?: string;
   lastname?: string;
   email?: string;
@@ -22,6 +24,8 @@ export interface IUser extends mongoose.Document {
   resetpasswordexpires?: string;
   facebookId?: string;
   googleId?: string;
+  createdAt?: string;
+  updatedAt?: string
 }
 
 const userSchema = new mongoose.Schema<IUser>(
