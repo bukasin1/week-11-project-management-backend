@@ -18,6 +18,6 @@ router.get('/:teamID/getuserdetails', isLoggedIn, getUserDetails)
 router.get('/:projectID/get-teams', isLoggedIn, getTeams)
 
 //get file uploads
-router.get('/getfileuploads', isLoggedIn, getFileUploads)
+router.get('/:projectID/getfileuploads', isLoggedIn, getFileUploads)
 
 export default router

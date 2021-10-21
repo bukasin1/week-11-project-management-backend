@@ -15,6 +15,6 @@ router.delete('/:teamID/leaveteam', auth_check_1.isLoggedIn, teams_controller_1.
 router.get('/:teamID/getuserdetails', auth_check_1.isLoggedIn, teams_controller_1.getUserDetails);
 router.get('/:projectID/get-teams', auth_check_1.isLoggedIn, teams_controller_1.getTeams);
 //get file uploads
-router.get('/getfileuploads', auth_check_1.isLoggedIn, teams_controller_1.getFileUploads);
+router.get('/:projectID/getfileuploads', auth_check_1.isLoggedIn, teams_controller_1.getFileUploads);
 exports.default = router;
 //# sourceMappingURL=teamsRoute.js.map
