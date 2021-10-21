@@ -9,6 +9,7 @@ const joiAuth_1 = __importDefault(require("../validateJoi/joiAuth"));
 const userschema_1 = __importDefault(require("../models/userschema"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const tasksSchema_1 = __importDefault(require("../models/tasksSchema"));
 const secretKey = process.env.TOKEN_KEY;
 const login = async (req, res) => {
     res.status(403).json({
@@ -93,9 +94,37 @@ async function loginRedirect(req, res) {
         const user = req.user;
         const token = jsonwebtoken_1.default.sign({ _id: user._id.toString() }, secretKey, { expiresIn: '72000000 seconds' });
         res.cookie('jwt', token);
+        const closedTask = await tasksSchema_1.default.find({ assignedUser: user.id, status: 'done' });
+        const todoTask = await tasksSchema_1.default.find({ assignedUser: user.id, status: 'todo' });
+        const backLog = await tasksSchema_1.default.find({ assignedUser: user.id, status: 'backlog' });
+        const openedTasks = [...todoTask, ...backLog];
+        const closedTasks = [...closedTask];
+        const { id, _id, firstname, lastname, email, gender, role, location, projects, teams, about, isVerified, avatar, facebookId, googleId, createdAt, updatedAt } = user;
+        const sendUser = {
+            id,
+            _id,
+            firstname,
+            lastname,
+            email,
+            gender,
+            role,
+            location,
+            projects,
+            teams,
+            about,
+            isVerified,
+            avatar,
+            facebookId,
+            googleId,
+            createdAt,
+            updatedAt,
+            openedTasks,
+            closedTasks
+        };
         res.status(200).send({
             msg: `Welcome ${user.firstname} ${user.lastname}`,
             user,
+            sendUser,
             token
         });
     }
@@ -107,7 +136,7 @@ async function ssoRedirect(req, res) {
     try {
         const user = req.user;
         const token = jsonwebtoken_1.default.sign({ _id: user._id.toString() }, secretKey, { expiresIn: '72000000 seconds' });
-        res.redirect(`${process.env.REACTURL}/success/${token}~${JSON.stringify(user)}`);
+        res.redirect(`${process.env.REACTURL}/welcome/${token}~${JSON.stringify(user)}`);
     }
     catch (err) {
     }

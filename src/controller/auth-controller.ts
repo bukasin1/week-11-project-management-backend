@@ -4,6 +4,7 @@ import loginSchema from '../validateJoi/joiAuth';
 import User, { IUser } from '../models/userschema';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import Task from "../models/tasksSchema";
 
 const secretKey = process.env.TOKEN_KEY as string;
 
@@ -89,9 +90,59 @@ export async function loginRedirect(req: Request, res: Response) {
     const user = req.user as IUser
     const token = jwt.sign({ _id: user._id.toString() }, secretKey, { expiresIn: '72000000 seconds' });
     res.cookie('jwt', token);
+
+    const closedTask = await Task.find({ assignedUser: user.id, status: 'done' });
+    const todoTask = await Task.find({ assignedUser: user.id, status: 'todo' });
+    const backLog = await Task.find({ assignedUser: user.id, status: 'backlog' });
+    const openedTasks = [...todoTask, ...backLog];
+    const closedTasks = [...closedTask];
+
+    const {
+      id,
+      _id,
+      firstname,
+      lastname,
+      email,
+      gender,
+      role,
+      location,
+      projects,
+      teams,
+      about,
+      isVerified,
+      avatar,
+      facebookId,
+      googleId,
+      createdAt,
+      updatedAt
+    } = user
+
+    const sendUser = {
+      id,
+      _id,
+      firstname,
+      lastname,
+      email,
+      gender,
+      role,
+      location,
+      projects,
+      teams,
+      about,
+      isVerified,
+      avatar,
+      facebookId,
+      googleId,
+      createdAt,
+      updatedAt,
+      openedTasks,
+      closedTasks
+    }
+
     res.status(200).send({
       msg: `Welcome ${user.firstname} ${user.lastname}`,
       user,
+      sendUser,
       token
     })
   } catch (err) {
@@ -103,7 +154,7 @@ export async function ssoRedirect(req: Request, res: Response) {
   try {
     const user = req.user as IUser
     const token = jwt.sign({ _id: user._id.toString() }, secretKey, { expiresIn: '72000000 seconds' });
-    res.redirect(`${process.env.REACTURL}/success/${token}~${JSON.stringify(user)}`)
+    res.redirect(`${process.env.REACTURL}/welcome/${token}~${JSON.stringify(user)}`)
   } catch (err) {
 
   }
