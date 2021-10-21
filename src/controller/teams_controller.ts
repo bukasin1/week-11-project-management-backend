@@ -219,7 +219,8 @@ export async function getUserDetails(req: Request, res: Response) {
 
 export async function getFileUploads(req: Request, res: Response): Promise<void> {
   try {
-    const tasks = (await Task.find({})) as ITask[];
+    const projectID = req.params.projectID
+    const tasks = (await Task.find({projectID})) as ITask[];
     const filesArray = tasks.map((task) => {
       return task.files;
     });
