@@ -6,9 +6,10 @@ import { createTask, updateTask } from '../controller/task-controller';
 import { authCheck, isLoggedIn } from '../middleware/auth-check';
 import { projectAuth } from '../middleware/projectAuth';
 import { getProjectsByUser, updateProjectByOwner } from '../controller/projectController';
+import { loginRedirect } from '../controller/auth-controller';
 const router = Router();
 
-router.get('/', isLoggedIn, showProfile);
+router.get('/', isLoggedIn, loginRedirect);
 router.put('/edit',isLoggedIn,upload, editProfile)
 router.post('/create-project', isLoggedIn, createProject)
 router.post('/:projectID/project-invite', isLoggedIn,projectAuth, projectInvite)
