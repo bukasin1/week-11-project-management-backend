@@ -154,7 +154,57 @@ export async function ssoRedirect(req: Request, res: Response) {
   try {
     const user = req.user as IUser
     const token = jwt.sign({ _id: user._id.toString() }, secretKey, { expiresIn: '72000000 seconds' });
-    res.redirect(`${process.env.REACTURL}/welcome/${token}~${JSON.stringify(user)}`)
+    res.cookie('jwt', token);
+
+    const closedTask = await Task.find({ assignedUser: user.id, status: 'done' });
+    const todoTask = await Task.find({ assignedUser: user.id, status: 'todo' });
+    const backLog = await Task.find({ assignedUser: user.id, status: 'backlog' });
+    const openedTasks = [...todoTask, ...backLog];
+    const closedTasks = [...closedTask];
+
+    const {
+      id,
+      _id,
+      firstname,
+      lastname,
+      email,
+      gender,
+      role,
+      location,
+      projects,
+      teams,
+      about,
+      isVerified,
+      avatar,
+      facebookId,
+      googleId,
+      createdAt,
+      updatedAt
+    } = user
+
+    const sendUser = {
+      id,
+      _id,
+      firstname,
+      lastname,
+      email,
+      gender,
+      role,
+      location,
+      projects,
+      teams,
+      about,
+      isVerified,
+      avatar,
+      facebookId,
+      googleId,
+      createdAt,
+      updatedAt,
+      openedTasks,
+      closedTasks
+    }
+
+    res.redirect(`${process.env.REACTURL}/welcome/${token}~${JSON.stringify(sendUser)}`)
   } catch (err) {
 
   }
