@@ -11,7 +11,7 @@ router.get('/', function (_req, res) {
 });
 router.post('/signup', user_controller_1.signUpUser);
 router.get('/verify/:id', user_controller_1.verifyUser);
-router.get('/activities', auth_check_1.isLoggedIn, activities_controllers_1.getActivities);
-router.get('/previous/activities', auth_check_1.isLoggedIn, activities_controllers_1.getYesterdayActivities);
+router.get('/:projectID/activities', auth_check_1.isLoggedIn, activities_controllers_1.getTodayActivities);
+router.get('/:projectID/previous-activities', auth_check_1.isLoggedIn, activities_controllers_1.getYesterActivities);
 exports.default = router;
 //# sourceMappingURL=users.js.map
