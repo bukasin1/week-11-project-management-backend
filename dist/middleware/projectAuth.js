@@ -28,7 +28,7 @@ async function projectAuth(req, res, next) {
                 });
                 return;
             }
-            res.status(200).json({
+            res.status(404).json({
                 message: 'Comment not found',
             });
             return;
