@@ -8,9 +8,11 @@ exports.getTaskByStatus = exports.deleteTask = exports.getAllTasks = exports.del
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 const cloudinary = require('cloudinary').v2;
 const tasksSchema_1 = __importDefault(require("../models/tasksSchema"));
+const userschema_1 = __importDefault(require("../models/userschema"));
 const projectSchema_1 = __importDefault(require("../models/projectSchema"));
 const tasksSchema_2 = __importDefault(require("../models/tasksSchema"));
 const projectSchema_2 = __importDefault(require("../models/projectSchema"));
+const activitySchema_1 = __importDefault(require("../models/activitySchema"));
 const getAllTasks = async (req, res) => {
     try {
         const loggedUser = req.user;
@@ -42,6 +44,7 @@ const createTask = async (req, res) => {
         const loggedInUser = req.user;
         const projectID = req.params.projectID;
         const project = await projectSchema_1.default.findById(projectID);
+        const user = await userschema_1.default.findById(req.body.assignedUser);
         if (((_a = loggedInUser._id) === null || _a === void 0 ? void 0 : _a.toString()) === project.owner) {
             const projectID = req.params.projectID;
             const task = new tasksSchema_2.default({
@@ -51,9 +54,27 @@ const createTask = async (req, res) => {
                 description: req.body.description,
                 assignedUser: req.body.assignedUser,
             });
+            await activitySchema_1.default.create({
+                projectID,
+                activityName: `Task ${task.title} was created and assigned to ${user.firstname} ${user.lastname}`,
+                performer: {
+                    userId: loggedInUser.id,
+                    userName: loggedInUser.firstname + ' ' + loggedInUser.lastname
+                }
+            });
             if (req.body.comment) {
                 const newComment = makeComment(loggedInUser, req.body.comment);
                 task.comments.push(newComment);
+                await activitySchema_1.default.create({
+                    projectID,
+                    activityName: `${loggedInUser.firstname} ${loggedInUser.lastname} commented on task ${task.title}`,
+                    commentDetails: req.body.comment,
+                    performer: {
+                        avatar: loggedInUser.avatar,
+                        userId: loggedInUser.id,
+                        userName: loggedInUser.firstname + ' ' + loggedInUser.lastname
+                    }
+                });
             }
             if (req.file) {
                 let fileSize;
@@ -93,10 +114,21 @@ async function updateTask(req, res) {
         const taskId = req.params.taskID;
         const task = await tasksSchema_2.default.findById(taskId);
         if (task) {
+            const projectID = task.projectID;
             const { title, assignedUser, description, dueDate, status, comment } = req.body;
             if (comment) {
                 const newComment = makeComment(loggedInUser, req.body.comment);
                 task.comments.push(newComment);
+                await activitySchema_1.default.create({
+                    projectID,
+                    activityName: `${loggedInUser.firstname} ${loggedInUser.lastname} commented on task ${task.title}`,
+                    commentDetails: req.body.comment,
+                    performer: {
+                        avatar: loggedInUser.avatar,
+                        userId: loggedInUser.id,
+                        userName: loggedInUser.firstname + ' ' + loggedInUser.lastname
+                    }
+                });
             }
             if (req.file) {
                 let fileSize;
@@ -118,6 +150,17 @@ async function updateTask(req, res) {
                     uploadedOn: Date.now()
                 };
                 task.files.push(newFile);
+            }
+            if (assignedUser !== task.assignedUser) {
+                const user = await userschema_1.default.findById(req.body.assignedUser);
+                await activitySchema_1.default.create({
+                    projectID,
+                    activityName: `Task ${task.title} was created and assigned to ${user.firstname} ${user.lastname}`,
+                    performer: {
+                        userId: loggedInUser.id,
+                        userName: loggedInUser.firstname + ' ' + loggedInUser.lastname
+                    }
+                });
             }
             console.log(title, 'title update');
             task.title = title || task.title;
@@ -191,8 +234,8 @@ async function createComment(req, res) {
         const loggedInUser = req.user;
         const taskId = req.params.taskID;
         const task = await tasksSchema_2.default.findById(taskId);
-        const projectId = task.projectID;
-        const project = await projectSchema_2.default.findById(projectId);
+        const projectID = task.projectID;
+        const project = await projectSchema_2.default.findById(projectID);
         const isCollaborator = (_a = project.collaborators) === null || _a === void 0 ? void 0 : _a.find(user => user.userId === loggedInUser.id);
         const isOwner = ((_b = project.owner) === null || _b === void 0 ? void 0 : _b.toString()) === loggedInUser._id.toString();
         if (isCollaborator || isOwner) {
@@ -200,6 +243,16 @@ async function createComment(req, res) {
             const newComment = makeComment(loggedInUser, req.body.comment);
             task.comments.push(newComment);
             await task.save();
+            await activitySchema_1.default.create({
+                projectID,
+                activityName: `${loggedInUser.firstname} ${loggedInUser.lastname} commented on task ${task.title}`,
+                commentDetails: req.body.comment,
+                performer: {
+                    avatar: loggedInUser.avatar,
+                    userId: loggedInUser.id,
+                    userName: loggedInUser.firstname + ' ' + loggedInUser.lastname
+                }
+            });
             res.status(201).send({
                 message: `Comment created`
             });
@@ -266,12 +319,21 @@ async function editComment(req, res) {
 exports.editComment = editComment;
 async function deleteComment(req, res) {
     try {
+        const loggedInUser = req.user;
         const taskId = req.params.taskID;
         const commentId = req.params.commentID;
         const task = await tasksSchema_2.default.findById(taskId);
         const commentIndex = task.comments.findIndex(comment => comment.id === commentId);
         task.comments.splice(commentIndex, 1);
         await task.save();
+        await activitySchema_1.default.create({
+            projectID: task.projectID,
+            activityName: ``,
+            performer: {
+                userId: loggedInUser.id,
+                userName: loggedInUser.firstname + ' ' + loggedInUser.lastname
+            }
+        });
         res.status(201).send({
             message: `Succesfull!, comment ${taskId} deleted `
         });
