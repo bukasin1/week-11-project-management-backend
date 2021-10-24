@@ -142,7 +142,7 @@ export async function updateTask(req: Request, res: Response){
         const user = await User.findById(req.body.assignedUser) as IUser
         await Activity.create({
           projectID,
-          activityName: `Task ${task.title} was created and assigned to ${user.firstname} ${user.lastname}`,
+          activityName: `Task ${task.title} was assigned to ${user.firstname} ${user.lastname}`,
           performer: {
             userId: loggedInUser.id,
             userName: loggedInUser.firstname as string + ' ' + loggedInUser.lastname as string

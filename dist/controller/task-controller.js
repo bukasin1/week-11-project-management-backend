@@ -155,7 +155,7 @@ async function updateTask(req, res) {
                 const user = await userschema_1.default.findById(req.body.assignedUser);
                 await activitySchema_1.default.create({
                     projectID,
-                    activityName: `Task ${task.title} was created and assigned to ${user.firstname} ${user.lastname}`,
+                    activityName: `Task ${task.title} was assigned to ${user.firstname} ${user.lastname}`,
                     performer: {
                         userId: loggedInUser.id,
                         userName: loggedInUser.firstname + ' ' + loggedInUser.lastname
