@@ -42,6 +42,7 @@ const userSchema = new mongoose_1.default.Schema({
         {
             projectId: String,
             projectName: String,
+            owner: Boolean,
         },
     ],
     teams: {

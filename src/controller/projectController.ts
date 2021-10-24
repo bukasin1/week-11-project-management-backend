@@ -30,6 +30,7 @@ export async function createProject(req: Request, res: Response) {
     creator.projects?.push({
       projectId: project._id,
       projectName: project.projectName,
+      owner: true
     });
     await creator.save();
     res.status(201).send(project);
