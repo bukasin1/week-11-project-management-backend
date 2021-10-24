@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 export interface userProject {
   projectId?: string;
   projectName?: string;
+  owner?: Boolean
 }
 
 export interface IUser extends mongoose.Document {
@@ -67,6 +68,7 @@ const userSchema = new mongoose.Schema<IUser>(
       {
         projectId: String,
         projectName: String,
+        owner: Boolean,
       },
     ],
     teams: {
