@@ -2,11 +2,12 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 const cloudinary = require('cloudinary').v2;
 import taskModel, { iComment, ITask } from '../models/tasksSchema';
-import { IUser } from '../models/userschema';
+import User, { IUser } from '../models/userschema';
 import projectModel, { IProject } from '../models/projectSchema';
 import express, { Request, Response } from 'express';
 import Task from '../models/tasksSchema';
 import Project from '../models/projectSchema';
+import Activity from '../models/activitySchema';
 
 const getAllTasks = async (req: Request, res: Response) => {
   try {
@@ -38,6 +39,7 @@ export const createTask = async (req: Request, res: Response) => {
     const loggedInUser = req.user as IUser;
     const projectID = req.params.projectID;
     const project = await projectModel.findById(projectID);
+    const user = await User.findById(req.body.assignedUser) as IUser
     if (loggedInUser._id?.toString() === project.owner) {
       const projectID = req.params.projectID;
       const task = new Task({
@@ -47,9 +49,27 @@ export const createTask = async (req: Request, res: Response) => {
         description: req.body.description,
         assignedUser: req.body.assignedUser,
       });
+      await Activity.create({
+        projectID,
+        activityName: `Task ${task.title} was created and assigned to ${user.firstname} ${user.lastname}`,
+        performer: {
+          userId: loggedInUser.id,
+          userName: loggedInUser.firstname as string + ' ' + loggedInUser.lastname as string
+        }
+      })
       if(req.body.comment){
         const newComment = makeComment(loggedInUser, req.body.comment)
         task.comments.push(newComment)
+        await Activity.create({
+          projectID,
+          activityName: `${loggedInUser.firstname} ${loggedInUser.lastname} commented on task ${task.title}`,
+          commentDetails: req.body.comment,
+          performer: {
+            avatar: loggedInUser.avatar,
+            userId: loggedInUser.id,
+            userName: loggedInUser.firstname as string + ' ' + loggedInUser.lastname as string
+          }
+        })
       }
       if (req.file) {
         let fileSize
@@ -84,10 +104,21 @@ export async function updateTask(req: Request, res: Response){
     const taskId = req.params.taskID
     const task = await Task.findById(taskId) as ITask
     if(task){
+      const projectID = task.projectID
       const {title, assignedUser, description, dueDate, status, comment} = req.body
       if(comment){
         const newComment = makeComment(loggedInUser, req.body.comment)
         task.comments.push(newComment)
+        await Activity.create({
+          projectID,
+          activityName: `${loggedInUser.firstname} ${loggedInUser.lastname} commented on task ${task.title}`,
+          commentDetails: req.body.comment,
+          performer: {
+            avatar: loggedInUser.avatar,
+            userId: loggedInUser.id,
+            userName: loggedInUser.firstname as string + ' ' + loggedInUser.lastname as string
+          }
+        })
       }
       if(req.file){
         let fileSize
@@ -106,6 +137,17 @@ export async function updateTask(req: Request, res: Response){
           uploadedOn: Date.now()
         }
         task.files.push(newFile)
+      }
+      if(assignedUser !== task.assignedUser){
+        const user = await User.findById(req.body.assignedUser) as IUser
+        await Activity.create({
+          projectID,
+          activityName: `Task ${task.title} was created and assigned to ${user.firstname} ${user.lastname}`,
+          performer: {
+            userId: loggedInUser.id,
+            userName: loggedInUser.firstname as string + ' ' + loggedInUser.lastname as string
+          }
+        })
       }
       console.log(title, 'title update')
       task.title = title || task.title
@@ -177,8 +219,8 @@ export async function createComment(req: Request, res: Response){
     const loggedInUser = req.user as IUser;
     const taskId = req.params.taskID
     const task = await Task.findById(taskId) as ITask
-    const projectId = task.projectID
-    const project = await Project.findById(projectId) as IProject
+    const projectID = task.projectID
+    const project = await Project.findById(projectID) as IProject
     const isCollaborator = project.collaborators?.find(user => user.userId === loggedInUser.id)
     const isOwner = project.owner?.toString() === loggedInUser._id.toString()
     if(isCollaborator || isOwner){
@@ -186,6 +228,16 @@ export async function createComment(req: Request, res: Response){
       const newComment = makeComment(loggedInUser, req.body.comment)
       task.comments.push(newComment)
       await task.save()
+      await Activity.create({
+        projectID,
+        activityName: `${loggedInUser.firstname} ${loggedInUser.lastname} commented on task ${task.title}`,
+        commentDetails: req.body.comment,
+        performer: {
+          avatar: loggedInUser.avatar,
+          userId: loggedInUser.id,
+          userName: loggedInUser.firstname as string + ' ' + loggedInUser.lastname as string
+        }
+      })
       res.status(201).send({
         message: `Comment created`
       })
@@ -249,12 +301,21 @@ export async function editComment(req: Request, res: Response){
 
 export async function deleteComment(req: Request, res: Response) {
   try{
+    const loggedInUser = req.user as IUser;
     const taskId = req.params.taskID
     const commentId = req.params.commentID
     const task = await Task.findById(taskId) as ITask
     const commentIndex = task.comments.findIndex(comment => comment.id === commentId)
     task.comments.splice(commentIndex, 1)
     await task.save()
+    await Activity.create({
+      projectID: task.projectID,
+      activityName: ``,
+      performer: {
+        userId: loggedInUser.id,
+        userName: loggedInUser.firstname as string + ' ' + loggedInUser.lastname as string
+      }
+    })
     res.status(201).send({
       message: `Succesfull!, comment ${taskId} deleted `
     })

@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { signUpUser, verifyUser } from '../controller/user.controller';
-import { getActivities, getYesterdayActivities } from '../controller/activities-controllers';
+import { getActivities, getTodayActivities, getYesterActivities, getYesterdayActivities } from '../controller/activities-controllers';
 import { isLoggedIn } from '../middleware/auth-check';
 const router = Router();
 
@@ -12,7 +12,7 @@ router.post('/signup', signUpUser);
 
 router.get('/verify/:id', verifyUser);
 
-router.get('/activities', isLoggedIn, getActivities);
-router.get('/previous/activities', isLoggedIn, getYesterdayActivities);
+router.get('/:projectID/activities', isLoggedIn, getTodayActivities);
+router.get('/:projectID/previous-activities', isLoggedIn, getYesterActivities);
 
 export default router;
