@@ -34,6 +34,7 @@ async function createProject(req, res) {
         (_a = creator.projects) === null || _a === void 0 ? void 0 : _a.push({
             projectId: project._id,
             projectName: project.projectName,
+            owner: true
         });
         await creator.save();
         res.status(201).send(project);
