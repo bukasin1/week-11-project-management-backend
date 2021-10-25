@@ -200,10 +200,19 @@ async function getTaskByStatus(req, res) {
 exports.getTaskByStatus = getTaskByStatus;
 async function getTaskByProject(req, res) {
     try {
-        const task = await tasksSchema_1.default.find({
+        const tasks = await tasksSchema_1.default.find({
             projectID: req.params.projectID,
         });
-        res.status(200).send(task);
+        const taskImproved = await Promise.all(tasks.map(async (singleTask) => {
+            const assignedUser = await userschema_1.default.findById(singleTask.assignedUser);
+            const AssignedUserDetails = {
+                AssignedUserAvatar: assignedUser.avatar,
+                AssaignedUserName: assignedUser.firstname + '.' + assignedUser.lastname[0],
+            };
+            return { ...AssignedUserDetails, ...singleTask.toObject() };
+        }));
+        console.log(taskImproved);
+        res.status(200).send(taskImproved);
     }
     catch (error) {
         console.log(error);
