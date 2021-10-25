@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTaskByStatus = exports.deleteTask = exports.getAllTasks = exports.deleteComment = exports.editComment = exports.getComments = exports.createComment = exports.updateTask = exports.createTask = void 0;
+exports.getTaskByProject = exports.getTaskByStatus = exports.deleteTask = exports.getAllTasks = exports.deleteComment = exports.editComment = exports.getComments = exports.createComment = exports.updateTask = exports.createTask = void 0;
 /* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 const cloudinary = require('cloudinary').v2;
@@ -198,6 +198,18 @@ async function getTaskByStatus(req, res) {
     }
 }
 exports.getTaskByStatus = getTaskByStatus;
+async function getTaskByProject(req, res) {
+    try {
+        const task = await tasksSchema_1.default.find({
+            projectID: req.params.projectID,
+        });
+        res.status(200).send(task);
+    }
+    catch (error) {
+        console.log(error);
+    }
+}
+exports.getTaskByProject = getTaskByProject;
 const deleteTask = async (req, res) => {
     try {
         //get the task that wants to be deleted
@@ -233,10 +245,10 @@ async function createComment(req, res) {
     try {
         const loggedInUser = req.user;
         const taskId = req.params.taskID;
-        const task = await tasksSchema_2.default.findById(taskId);
+        const task = (await tasksSchema_2.default.findById(taskId));
         const projectID = task.projectID;
-        const project = await projectSchema_2.default.findById(projectID);
-        const isCollaborator = (_a = project.collaborators) === null || _a === void 0 ? void 0 : _a.find(user => user.userId === loggedInUser.id);
+        const project = (await projectSchema_2.default.findById(projectID));
+        const isCollaborator = (_a = project.collaborators) === null || _a === void 0 ? void 0 : _a.find((user) => user.userId === loggedInUser.id);
         const isOwner = ((_b = project.owner) === null || _b === void 0 ? void 0 : _b.toString()) === loggedInUser._id.toString();
         if (isCollaborator || isOwner) {
             const { comment } = req.body;
@@ -250,16 +262,16 @@ async function createComment(req, res) {
                 performer: {
                     avatar: loggedInUser.avatar,
                     userId: loggedInUser.id,
-                    userName: loggedInUser.firstname + ' ' + loggedInUser.lastname
-                }
+                    userName: (loggedInUser.firstname + ' ' + loggedInUser.lastname),
+                },
             });
             res.status(201).send({
-                message: `Comment created`
+                message: `Comment created`,
             });
             return;
         }
         res.status(201).send({
-            message: `You are not a collaborator on this project`
+            message: `You are not a collaborator on this project`,
         });
     }
     catch (err) {
@@ -273,11 +285,11 @@ exports.createComment = createComment;
 async function getComments(req, res) {
     try {
         const taskId = req.params.taskID;
-        const task = await tasksSchema_2.default.findById(taskId);
+        const task = (await tasksSchema_2.default.findById(taskId));
         const comments = task.comments;
         res.status(201).send({
-            status: "Succesfull",
-            comments
+            status: 'Succesfull',
+            comments,
         });
         return;
     }
@@ -294,19 +306,19 @@ async function editComment(req, res) {
         const loggedInUser = req.user;
         const taskId = req.params.taskID;
         const commentId = req.params.commentID;
-        const task = await tasksSchema_2.default.findById(taskId);
-        const comment = task.comments.find(comment => comment.id === commentId);
-        const commentIndex = task.comments.findIndex(comment => comment.id === commentId);
+        const task = (await tasksSchema_2.default.findById(taskId));
+        const comment = task.comments.find((comment) => comment.id === commentId);
+        const commentIndex = task.comments.findIndex((comment) => comment.id === commentId);
         const { content, createdBy, createdOn, _id, id } = comment;
         const editedComment = {
             ...{ content, createdBy, createdOn, _id },
             content: req.body.comment || content,
-            updatedOn: Date.now()
+            updatedOn: Date.now(),
         };
         task.comments[commentIndex] = editedComment;
         await task.save();
         res.status(201).send({
-            message: `Succesfull!, comment ${commentId} edited `
+            message: `Succesfull!, comment ${commentId} edited `,
         });
     }
     catch (err) {
@@ -322,8 +334,8 @@ async function deleteComment(req, res) {
         const loggedInUser = req.user;
         const taskId = req.params.taskID;
         const commentId = req.params.commentID;
-        const task = await tasksSchema_2.default.findById(taskId);
-        const commentIndex = task.comments.findIndex(comment => comment.id === commentId);
+        const task = (await tasksSchema_2.default.findById(taskId));
+        const commentIndex = task.comments.findIndex((comment) => comment.id === commentId);
         task.comments.splice(commentIndex, 1);
         await task.save();
         await activitySchema_1.default.create({
@@ -331,11 +343,11 @@ async function deleteComment(req, res) {
             activityName: ``,
             performer: {
                 userId: loggedInUser.id,
-                userName: loggedInUser.firstname + ' ' + loggedInUser.lastname
-            }
+                userName: (loggedInUser.firstname + ' ' + loggedInUser.lastname),
+            },
         });
         res.status(201).send({
-            message: `Succesfull!, comment ${taskId} deleted `
+            message: `Succesfull!, comment ${taskId} deleted `,
         });
     }
     catch (err) {
