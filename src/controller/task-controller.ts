@@ -183,6 +183,17 @@ async function getTaskByStatus(req: express.Request, res: express.Response) {
   }
 }
 
+async function getTaskByProject(req: express.Request, res: express.Response) {
+  try {
+    const task = await taskModel.find({
+      projectID: req.params.projectID,
+    });
+    res.status(200).send(task);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 const deleteTask = async (req: Request, res: Response) => {
   try {
     //get the task that wants to be deleted
@@ -214,20 +225,20 @@ const deleteTask = async (req: Request, res: Response) => {
 
 // }
 
-export async function createComment(req: Request, res: Response){
-  try{
+export async function createComment(req: Request, res: Response) {
+  try {
     const loggedInUser = req.user as IUser;
-    const taskId = req.params.taskID
-    const task = await Task.findById(taskId) as ITask
-    const projectID = task.projectID
-    const project = await Project.findById(projectID) as IProject
-    const isCollaborator = project.collaborators?.find(user => user.userId === loggedInUser.id)
-    const isOwner = project.owner?.toString() === loggedInUser._id.toString()
-    if(isCollaborator || isOwner){
-      const {comment} = req.body
-      const newComment = makeComment(loggedInUser, req.body.comment)
-      task.comments.push(newComment)
-      await task.save()
+    const taskId = req.params.taskID;
+    const task = (await Task.findById(taskId)) as ITask;
+    const projectID = task.projectID;
+    const project = (await Project.findById(projectID)) as IProject;
+    const isCollaborator = project.collaborators?.find((user) => user.userId === loggedInUser.id);
+    const isOwner = project.owner?.toString() === loggedInUser._id.toString();
+    if (isCollaborator || isOwner) {
+      const { comment } = req.body;
+      const newComment = makeComment(loggedInUser, req.body.comment);
+      task.comments.push(newComment);
+      await task.save();
       await Activity.create({
         projectID,
         activityName: `${loggedInUser.firstname} ${loggedInUser.lastname} commented on task ${task.title}`,
@@ -235,64 +246,64 @@ export async function createComment(req: Request, res: Response){
         performer: {
           avatar: loggedInUser.avatar,
           userId: loggedInUser.id,
-          userName: loggedInUser.firstname as string + ' ' + loggedInUser.lastname as string
-        }
-      })
+          userName: ((loggedInUser.firstname as string) + ' ' + loggedInUser.lastname) as string,
+        },
+      });
       res.status(201).send({
-        message: `Comment created`
-      })
+        message: `Comment created`,
+      });
       return;
     }
     res.status(201).send({
-      message: `You are not a collaborator on this project`
-    })
-  }catch(err){
-    console.log(err)
+      message: `You are not a collaborator on this project`,
+    });
+  } catch (err) {
+    console.log(err);
     res.status(500).send({
       error: err,
     });
   }
 }
 
-export async function getComments(req: Request, res: Response){
-  try{
-    const taskId = req.params.taskID
-    const task = await Task.findById(taskId) as ITask
-    const comments = task.comments
+export async function getComments(req: Request, res: Response) {
+  try {
+    const taskId = req.params.taskID;
+    const task = (await Task.findById(taskId)) as ITask;
+    const comments = task.comments;
     res.status(201).send({
-      status: "Succesfull",
-      comments
-    })
+      status: 'Succesfull',
+      comments,
+    });
     return;
-  }catch(err){
-    console.log(err)
+  } catch (err) {
+    console.log(err);
     res.status(500).send({
       error: err,
     });
   }
 }
 
-export async function editComment(req: Request, res: Response){
-  try{
+export async function editComment(req: Request, res: Response) {
+  try {
     const loggedInUser = req.user as IUser;
-    const taskId = req.params.taskID
-    const commentId = req.params.commentID
-    const task = await Task.findById(taskId) as ITask
-    const comment = task.comments.find(comment => comment.id === commentId) as iComment
-    const commentIndex = task.comments.findIndex(comment => comment.id === commentId)
-    const {content, createdBy, createdOn, _id, id} = comment
+    const taskId = req.params.taskID;
+    const commentId = req.params.commentID;
+    const task = (await Task.findById(taskId)) as ITask;
+    const comment = task.comments.find((comment) => comment.id === commentId) as iComment;
+    const commentIndex = task.comments.findIndex((comment) => comment.id === commentId);
+    const { content, createdBy, createdOn, _id, id } = comment;
     const editedComment = {
-      ...{content, createdBy, createdOn, _id},
+      ...{ content, createdBy, createdOn, _id },
       content: req.body.comment || content,
-      updatedOn: Date.now()
-    }
-    task.comments[commentIndex] = editedComment
-    await task.save()
+      updatedOn: Date.now(),
+    };
+    task.comments[commentIndex] = editedComment;
+    await task.save();
     res.status(201).send({
-      message: `Succesfull!, comment ${commentId} edited `
-    })
-  }catch(err){
-    console.log(err)
+      message: `Succesfull!, comment ${commentId} edited `,
+    });
+  } catch (err) {
+    console.log(err);
     res.status(500).send({
       error: err,
     });
@@ -300,31 +311,31 @@ export async function editComment(req: Request, res: Response){
 }
 
 export async function deleteComment(req: Request, res: Response) {
-  try{
+  try {
     const loggedInUser = req.user as IUser;
-    const taskId = req.params.taskID
-    const commentId = req.params.commentID
-    const task = await Task.findById(taskId) as ITask
-    const commentIndex = task.comments.findIndex(comment => comment.id === commentId)
-    task.comments.splice(commentIndex, 1)
-    await task.save()
+    const taskId = req.params.taskID;
+    const commentId = req.params.commentID;
+    const task = (await Task.findById(taskId)) as ITask;
+    const commentIndex = task.comments.findIndex((comment) => comment.id === commentId);
+    task.comments.splice(commentIndex, 1);
+    await task.save();
     await Activity.create({
       projectID: task.projectID,
       activityName: ``,
       performer: {
         userId: loggedInUser.id,
-        userName: loggedInUser.firstname as string + ' ' + loggedInUser.lastname as string
-      }
-    })
+        userName: ((loggedInUser.firstname as string) + ' ' + loggedInUser.lastname) as string,
+      },
+    });
     res.status(201).send({
-      message: `Succesfull!, comment ${taskId} deleted `
-    })
-  }catch(err){
-    console.log(err)
+      message: `Succesfull!, comment ${taskId} deleted `,
+    });
+  } catch (err) {
+    console.log(err);
     res.status(500).send({
       error: err,
     });
   }
 }
 
-export { getAllTasks, deleteTask, getTaskByStatus };
+export { getAllTasks, deleteTask, getTaskByStatus, getTaskByProject };
