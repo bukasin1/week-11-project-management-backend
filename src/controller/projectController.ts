@@ -190,3 +190,34 @@ export const updateProjectByOwner = async (req: Request, res: Response) => {
     res.status(500).send(error);
   }
 };
+
+export const getProjectCollaborators = async(req: Request, res: Response) => {
+  try{
+    const id = req.params.projectID;
+    const project = await Project.findById(id) as IProject
+    if(project){
+      const promiseOfCollaborators = project.collaborators.map(async(collab) => {
+        const userInfo = await User.findById(collab.userId);
+        const { firstname, lastname, role, location, avatar } = userInfo;
+
+        return {
+          firstname,
+          lastname,
+          userId: collab.userId as string
+        }
+      })
+
+      const collaborators = await Promise.all(promiseOfCollaborators);
+
+      res.status(200).json({
+        data: collaborators,
+      });
+      return;
+    }
+    res.status(404).json({
+      err: "Project not found",
+    });
+  }catch(err){
+    res.status(500).send(err);
+  }
+}

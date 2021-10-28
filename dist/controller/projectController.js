@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateProjectByOwner = exports.getProjectsByUser = exports.createCollaborator = exports.signUpCollaborator = exports.addCollaborator = exports.projectInvite = exports.createProject = void 0;
+exports.getProjectCollaborators = exports.updateProjectByOwner = exports.getProjectsByUser = exports.createCollaborator = exports.signUpCollaborator = exports.addCollaborator = exports.projectInvite = exports.createProject = void 0;
 const projectSchema_1 = __importDefault(require("../models/projectSchema"));
 const userschema_1 = __importDefault(require("../models/userschema"));
 const sendemail_1 = require("../sendemail/sendemail");
@@ -203,4 +203,33 @@ const updateProjectByOwner = async (req, res) => {
     }
 };
 exports.updateProjectByOwner = updateProjectByOwner;
+const getProjectCollaborators = async (req, res) => {
+    try {
+        const id = req.params.projectID;
+        const project = await projectSchema_1.default.findById(id);
+        if (project) {
+            const promiseOfCollaborators = project.collaborators.map(async (collab) => {
+                const userInfo = await userschema_1.default.findById(collab.userId);
+                const { firstname, lastname, role, location, avatar } = userInfo;
+                return {
+                    firstname,
+                    lastname,
+                    userId: collab.userId
+                };
+            });
+            const collaborators = await Promise.all(promiseOfCollaborators);
+            res.status(200).json({
+                data: collaborators,
+            });
+            return;
+        }
+        res.status(404).json({
+            err: "Project not found",
+        });
+    }
+    catch (err) {
+        res.status(500).send(err);
+    }
+};
+exports.getProjectCollaborators = getProjectCollaborators;
 //# sourceMappingURL=projectController.js.map

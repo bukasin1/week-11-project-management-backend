@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 export interface IProject extends mongoose.Document  {
   owner?: string,
   projectName?: string,
-  collaborators?: Array<{userId?: string}>
+  collaborators: Array<{userId: string}>
 }
 
 const projectSchema = new mongoose.Schema<IProject>(
