@@ -12,7 +12,7 @@ const router = Router();
 router.get('/', isLoggedIn, loginRedirect);
 router.put('/edit',isLoggedIn,upload, editProfile)
 router.post('/create-project', isLoggedIn, createProject)
-router.post('/:projectID/collaborators', isLoggedIn, getProjectCollaborators)
+router.get('/:projectID/collaborators', isLoggedIn, getProjectCollaborators)
 router.post('/:projectID/project-invite', isLoggedIn,projectAuth, projectInvite)
 router.get('/:projectID/create-collaborator/:token', addCollaborator)
 router.get('/collaborator-profile/:projectID/:email', signUpCollaborator)

@@ -13,7 +13,7 @@ const router = (0, express_1.Router)();
 router.get('/', auth_check_1.isLoggedIn, auth_controller_1.loginRedirect);
 router.put('/edit', auth_check_1.isLoggedIn, file_uploads_1.upload, profile_controller_1.editProfile);
 router.post('/create-project', auth_check_1.isLoggedIn, projectController_1.createProject);
-router.post('/:projectID/collaborators', auth_check_1.isLoggedIn, projectController_1.getProjectCollaborators);
+router.get('/:projectID/collaborators', auth_check_1.isLoggedIn, projectController_1.getProjectCollaborators);
 router.post('/:projectID/project-invite', auth_check_1.isLoggedIn, projectAuth_1.projectAuth, projectController_1.projectInvite);
 router.get('/:projectID/create-collaborator/:token', projectController_1.addCollaborator);
 router.get('/collaborator-profile/:projectID/:email', projectController_1.signUpCollaborator);
