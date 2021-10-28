@@ -30,7 +30,8 @@ export interface iComment {
   id?: string,
   createdBy: {
     userId: string,
-    userName: string
+    userName: string,
+    userRole: string
   };
   content: string;
   createdOn: number;
@@ -75,7 +76,8 @@ const taskSchema = new mongoose.Schema<ITask>(
       {
         createdBy: {
           userId: String,
-          userName: String
+          userName: String,
+          userRole: String
         },
         content: {
           type: String,

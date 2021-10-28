@@ -42,7 +42,8 @@ const taskSchema = new mongoose_1.default.Schema({
         {
             createdBy: {
                 userId: String,
-                userName: String
+                userName: String,
+                userRole: String
             },
             content: {
                 type: String,

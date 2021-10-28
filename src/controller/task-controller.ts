@@ -25,7 +25,8 @@ function makeComment(user: IUser, content: string){
   const newComment: iComment = {
     createdBy: {
       userId: user._id,
-      userName: user.firstname as string + ' ' + user.lastname as string
+      userName: user.firstname as string + ' ' + user.lastname as string,
+      userRole: user.role as string
     },
     content,
     createdOn: Date.now(),

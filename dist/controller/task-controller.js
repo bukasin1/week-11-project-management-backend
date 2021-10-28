@@ -30,7 +30,8 @@ function makeComment(user, content) {
     const newComment = {
         createdBy: {
             userId: user._id,
-            userName: user.firstname + ' ' + user.lastname
+            userName: user.firstname + ' ' + user.lastname,
+            userRole: user.role
         },
         content,
         createdOn: Date.now(),
