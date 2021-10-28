@@ -210,16 +210,18 @@ const getProjectCollaborators = async (req, res) => {
         if (project) {
             const promiseOfCollaborators = project.collaborators.map(async (collab) => {
                 const userInfo = await userschema_1.default.findById(collab.userId);
-                const { firstname, lastname, role, location, avatar } = userInfo;
-                return {
-                    firstname,
-                    lastname,
-                    userId: collab.userId
-                };
+                if (userInfo) {
+                    const { firstname, lastname, role, location, avatar } = userInfo;
+                    return {
+                        firstname,
+                        lastname,
+                        userId: collab.userId
+                    };
+                }
             });
             const collaborators = await Promise.all(promiseOfCollaborators);
             res.status(200).json({
-                data: collaborators,
+                data: collaborators.filter(collab => collab),
             });
             return;
         }
@@ -228,6 +230,7 @@ const getProjectCollaborators = async (req, res) => {
         });
     }
     catch (err) {
+        console.log(err, "error");
         res.status(500).send(err);
     }
 };

@@ -198,19 +198,21 @@ export const getProjectCollaborators = async(req: Request, res: Response) => {
     if(project){
       const promiseOfCollaborators = project.collaborators.map(async(collab) => {
         const userInfo = await User.findById(collab.userId);
-        const { firstname, lastname, role, location, avatar } = userInfo;
+        if(userInfo){
+          const { firstname, lastname, role, location, avatar } = userInfo;
 
-        return {
-          firstname,
-          lastname,
-          userId: collab.userId as string
+          return {
+            firstname,
+            lastname,
+            userId: collab.userId as string
+          }
         }
       })
 
       const collaborators = await Promise.all(promiseOfCollaborators);
 
       res.status(200).json({
-        data: collaborators,
+        data: collaborators.filter(collab => collab),
       });
       return;
     }
@@ -218,6 +220,7 @@ export const getProjectCollaborators = async(req: Request, res: Response) => {
       err: "Project not found",
     });
   }catch(err){
+    console.log(err, "error")
     res.status(500).send(err);
   }
 }
