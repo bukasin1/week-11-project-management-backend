@@ -18,7 +18,7 @@ router.get('/:projectID/create-collaborator/:token', addCollaborator)
 router.get('/collaborator-profile/:projectID/:email', signUpCollaborator)
 router.post('/collaborator-profile/:projectID/:email', createCollaborator)
 router.post('/:projectID/task',isLoggedIn, projectAuth, upload,createTask)
-router.put('/:taskID', isLoggedIn,projectAuth,upload, updateTask)
+router.put('/:taskID', isLoggedIn,upload, updateTask)
 router.get('/getprojects', isLoggedIn, getProjectsByUser);
 router.post('/getproject/:projectID', isLoggedIn, projectAuth, updateProjectByOwner);
 // router.delete('deleteTask', deleteTask )

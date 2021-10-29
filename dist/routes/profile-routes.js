@@ -19,7 +19,7 @@ router.get('/:projectID/create-collaborator/:token', projectController_1.addColl
 router.get('/collaborator-profile/:projectID/:email', projectController_1.signUpCollaborator);
 router.post('/collaborator-profile/:projectID/:email', projectController_1.createCollaborator);
 router.post('/:projectID/task', auth_check_1.isLoggedIn, projectAuth_1.projectAuth, file_uploads_1.upload, task_controller_1.createTask);
-router.put('/:taskID', auth_check_1.isLoggedIn, projectAuth_1.projectAuth, file_uploads_1.upload, task_controller_1.updateTask);
+router.put('/:taskID', auth_check_1.isLoggedIn, file_uploads_1.upload, task_controller_1.updateTask);
 router.get('/getprojects', auth_check_1.isLoggedIn, projectController_2.getProjectsByUser);
 router.post('/getproject/:projectID', auth_check_1.isLoggedIn, projectAuth_1.projectAuth, projectController_2.updateProjectByOwner);
 // router.delete('deleteTask', deleteTask )
