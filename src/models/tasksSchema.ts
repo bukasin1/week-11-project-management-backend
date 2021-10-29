@@ -8,7 +8,7 @@ export interface ITask extends mongoose.Document {
   description: string;
   files: [file];
   comments: [iComment];
-  dueDate: Date;
+  dueDate: String;
   status: string;
 }
 
@@ -93,7 +93,7 @@ const taskSchema = new mongoose.Schema<ITask>(
       },
     ],
     dueDate: {
-      type: Date,
+      type: String,
     },
     status: {
       type: String,
