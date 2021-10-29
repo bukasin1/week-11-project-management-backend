@@ -211,7 +211,7 @@ async function getTaskByProject(req, res) {
                 AssignedUserAvatar: assignedUser.avatar,
                 AssaignedUserName: assignedUser.firstname + '.' + assignedUser.lastname[0],
             };
-            return { ...AssignedUserDetails, ...singleTask.toObject() };
+            return { id: singleTask._id, ...AssignedUserDetails, ...singleTask.toObject() };
         }));
         console.log(taskImproved);
         res.status(200).send(taskImproved);

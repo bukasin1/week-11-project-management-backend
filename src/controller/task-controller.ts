@@ -198,7 +198,7 @@ async function getTaskByProject(req: express.Request, res: express.Response) {
           AssignedUserAvatar: assignedUser.avatar as string,
           AssaignedUserName: assignedUser.firstname + '.' + assignedUser.lastname[0],
         };
-        return { ...AssignedUserDetails, ...singleTask.toObject() };
+        return { id: singleTask._id, ...AssignedUserDetails, ...singleTask.toObject() };
       }),
     );
 
