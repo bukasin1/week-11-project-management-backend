@@ -140,7 +140,7 @@ export async function updateTask(req: Request, res: Response){
         }
         task.files.push(newFile)
       }
-      if(assignedUser !== task.assignedUser){
+      if(assignedUser && assignedUser !== task.assignedUser){
         const user = await User.findById(req.body.assignedUser) as IUser
         await Activity.create({
           projectID,

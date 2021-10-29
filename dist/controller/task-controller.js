@@ -153,7 +153,7 @@ async function updateTask(req, res) {
                 };
                 task.files.push(newFile);
             }
-            if (assignedUser !== task.assignedUser) {
+            if (assignedUser && assignedUser !== task.assignedUser) {
                 const user = await userschema_1.default.findById(req.body.assignedUser);
                 await activitySchema_1.default.create({
                     projectID,
