@@ -23,7 +23,7 @@ async function projectAuth(req, res, next) {
                     next();
                     return;
                 }
-                res.status(200).json({
+                res.status(404).json({
                     message: 'You did not create this comment and therefore are not authorized to edit/delete it',
                 });
                 return;
@@ -49,14 +49,14 @@ async function projectAuth(req, res, next) {
             next();
             return;
         }
-        res.status(200).json({
+        res.status(404).json({
             message: 'You are not the owner of the project',
         });
         return;
     }
     catch (err) {
         console.log(err);
-        res.status(200).json({
+        res.status(404).json({
             message: 'You are not the owner of the project',
         });
     }
