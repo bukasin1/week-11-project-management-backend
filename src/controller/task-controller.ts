@@ -49,6 +49,7 @@ export const createTask = async (req: Request, res: Response) => {
         title: req.body.title,
         description: req.body.description,
         assignedUser: req.body.assignedUser,
+        dueDate: req.body.dueDate
       });
       await Activity.create({
         projectID,

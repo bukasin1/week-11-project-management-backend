@@ -54,6 +54,7 @@ const createTask = async (req, res) => {
                 title: req.body.title,
                 description: req.body.description,
                 assignedUser: req.body.assignedUser,
+                dueDate: req.body.dueDate
             });
             await activitySchema_1.default.create({
                 projectID,
