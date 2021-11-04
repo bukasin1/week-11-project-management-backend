@@ -276,12 +276,19 @@ async function createComment(req, res) {
                     userName: (loggedInUser.firstname + ' ' + loggedInUser.lastname),
                 },
             });
+            const assignedUser = await userschema_1.default.findById(task.assignedUser);
+            const AssignedUserDetails = {
+                AssignedUserAvatar: assignedUser.avatar,
+                AssaignedUserName: assignedUser.firstname + '.' + assignedUser.lastname[0],
+            };
+            const returnTask = { id: task._id, ...AssignedUserDetails, ...task.toObject() };
             res.status(201).send({
                 message: `Comment created`,
+                task: returnTask
             });
             return;
         }
-        res.status(201).send({
+        res.status(401).send({
             message: `You are not a collaborator on this project`,
         });
     }

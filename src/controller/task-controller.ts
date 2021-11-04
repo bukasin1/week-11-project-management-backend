@@ -264,12 +264,23 @@ export async function createComment(req: Request, res: Response) {
           userName: ((loggedInUser.firstname as string) + ' ' + loggedInUser.lastname) as string,
         },
       });
+
+      const assignedUser = await User.findById(task.assignedUser);
+      const AssignedUserDetails = {
+        AssignedUserAvatar: assignedUser.avatar as string,
+        AssaignedUserName: assignedUser.firstname + '.' + assignedUser.lastname[0],
+      };
+
+      const returnTask = { id: task._id, ...AssignedUserDetails, ...task.toObject() }
+
+
       res.status(201).send({
         message: `Comment created`,
+        task: returnTask
       });
       return;
     }
-    res.status(201).send({
+    res.status(401).send({
       message: `You are not a collaborator on this project`,
     });
   } catch (err) {
